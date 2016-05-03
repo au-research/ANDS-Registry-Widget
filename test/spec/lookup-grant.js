@@ -17,10 +17,20 @@
         }
     });
 
+    /**
+     * Most basic test
+     */
     QUnit.test("is inside jQuery library", function (assert) {
         assert.equal(typeof $.fn.registryWidget, "function", "has function inside jquery.fn");
         assert.equal(typeof $fixture.registryWidget, "function", "another way to test it");
     });
+
+    QUnit.test( "returns jQuery functions after called (chaining)", function( assert ) {
+        assert.equal(
+            typeof $fixture.registryWidget().on,
+            "function",
+            "'on' function must exist after plugin call" );
+    } );
 
     QUnit.test("enable custom config", function (assert) {
         $fixture.registryWidget({
@@ -39,7 +49,11 @@
     });
 
 
-    QUnit.test("can lookup", function (assert) {
+    /**
+     * todo test lookup using id field
+     * todo test lookup callback
+     */
+    QUnit.test("lookup a sample purl returns the right result", function (assert) {
 
         $fixture = $("<div data-purl='http://purl.org/au-research/grants/goyder/E.1.7'></div>");
 
