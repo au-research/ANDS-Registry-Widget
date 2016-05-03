@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ANDS Registry Widget Demo</title>
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../src/jquery.ands.registry-widget.js"></script>
+</head>
+<body>
+    <div id="element"></div>
+    <script>
+        $( function() {
+            $( "#element" ).registryWidget( {
+                api: "a custom key"
+            } );
+        } );
+    </script>
+</body>
+</html>
