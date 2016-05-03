@@ -7,13 +7,22 @@
     <script src="../src/jquery.ands.registry-widget.js"></script>
 </head>
 <body>
-    <div id="element"></div>
+
+    <div id="display-grant"
+         data-purl="http://purl.org/au-research/grants/goyder/E.1.7">
+    </div>
+
+
     <script>
         $( function() {
-            $( "#element" ).registryWidget( {
-                api: "a custom key"
-            } );
+
+            $('#display-grant').registryWidget({
+                api_key: "public",
+                mode: "lookup-grant"
+            });
+
         } );
     </script>
+
 </body>
 </html>

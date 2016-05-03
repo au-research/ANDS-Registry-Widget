@@ -76,7 +76,7 @@ module.exports = function( grunt ) {
         // (call 'grunt watch')
         watch: {
             files: [ "src/*", "test/**/*" ],
-            tasks: [ "default" ]
+            tasks: [ "build" ]
         }
 
     } );
