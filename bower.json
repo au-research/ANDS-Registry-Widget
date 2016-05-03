@@ -1,0 +1,24 @@
+{
+  "name": "ANDS Registry Widget",
+  "license": "MIT",
+  "authors": [
+    "Minh Duc Nguyen <minh.nguyen@ands.org.au>"
+  ],
+  "description": "A Widget to display and search for ANDS Registry contents",
+  "homepage": "https://developers.ands.org.au/",
+  "keywords": [
+    "jquery",
+    "plugin",
+    "ands",
+    "ands-registry-widget",
+  ],
+  "main": "src/jquery.ands.registry-widget.js",
+  "dependencies": {
+    "jquery": "1"
+  },
+  "ignore": [
+    "npm-debug.log",
+    "bower_components",
+    "node_modules"
+  ]
+}
