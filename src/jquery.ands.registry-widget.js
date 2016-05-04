@@ -79,14 +79,23 @@
             }
 
             me.lookup(element, target);
-
-            $(element).on('blur', function(){
+            $(element).on('blur', function() {
                 me.lookup(element, target);
             });
 
-            $(element).on('keyup', function(){
-                me.lookup(element, target);
+            $(element).on('keyup', function() {
+                delay(function(){
+                   me.lookup(element, target);
+                }, 1000);
             });
+
+            var delay = (function(){
+                var timer = 0;
+                return function(callback, ms){
+                    clearTimeout (timer);
+                    timer = setTimeout(callback, ms);
+                };
+            })();
 
         },
 
@@ -108,7 +117,20 @@
             }
             searchContainer.hide();
 
-            this.render(searchContainer, {}, "search-tpl");
+            var displayOptions = {};
+            if (this.settings['search_options']) {
+                if (this.settings['search_options']['facets']) {
+                    $.each(this.settings['search_options']['facets'], function(){
+                       if (this=='institution') {
+
+                       }
+                    });
+                    displayOptions['facets'] = this.settings['search_options']['facets'];
+                }
+            }
+            this.render(searchContainer, displayOptions, "search-tpl");
+
+            // click event on the search toggle to open the search container
             searchToggle.on('click', function() {
                 searchContainer.slideToggle();
             });
@@ -116,27 +138,61 @@
             var searchQuery = $('.search-query', searchContainer);
             var searchButton = $('.search-button', searchContainer);
             var searchResult = $('.search-result', searchContainer);
+            var facetSelect = $('.facet-select', searchContainer);
 
+            // auto search
+            if (this.settings['search_options'] && this.settings['search_options']['auto_search']) {
+                me.search($(searchQuery).val(), searchResult);
+                searchContainer.show();
+            }
+
+            // enter key for search Query
             searchQuery.on('keyup', function(event) {
                 if(event.which == 13) {
                     me.search($(searchQuery).val(), searchResult);
                 }
             });
 
+            // click event on the search button
             searchButton.on('click', function() {
                 me.search($(searchQuery).val(), searchResult);
             });
 
+            // click event on one of the search result item
             $(searchResult).on('click', '.search-result-item', function() {
                 $(element).val($(this).data('purl'));
                 $(searchContainer).hide();
+
                 $(element).blur();
+
+                //todo configurable?
+                $('html, body').animate({
+                    scrollTop: $(element).offset().top
+                }, 500);
+
             });
+
+            //bind facetSelect
+            $(searchResult).on('change', '.facet-select', function() {
+                var param = $(this).data('param');
+                var value = $(this).val();
+                me.params[param] = value;
+                me.search($(searchQuery).val(), searchResult);
+            });
+
+            //bind showMore
+            $(searchResult).on('click', '.show-more', function() {
+                var pp;
+                pp = me.params['pp'] ? me.params['pp'] : 30;
+                me.params['rows'] = me.params['rows'] ? me.params['rows'] + pp : 30 + pp;
+                me.search($(searchQuery).val(), searchResult);
+            });
+
         },
 
         lookup: function(element, target) {
             var me = this;
-            if ($(element).val() != "") {
+            if ($(element).val() != "" && me.params.purl != $(element).val()) {
                 me.params.purl = $(element).val();
                 me.lookupAndDisplay(target, 'display-grant-tpl');
             }
@@ -149,10 +205,26 @@
             me.lookupAndDisplay(searchResultContainer, 'search-result-tpl');
         },
 
+        getSearchOption: function(option) {
+            if (this.settings['search_options'] && this.settings['search_options'][option]) {
+                return this.settings['search_options'][option];
+            } else {
+                return false;
+            }
+        },
+
         lookupAndDisplay: function(element, template) {
             var me = this;
-            $(element).html('Loading...');
-            this.service.lookup(this.params).done(function(data){
+
+            if ($(element).text()=="") {
+                $(element).text('Loading...');
+            }
+
+            if (me.getSearchOption('facets') !== false) {
+                me.params.facets = me.getSearchOption('facets').join();
+            }
+
+            me.service.lookup(me.params).done(function(data){
                 if (me.hasCallback('display')) {
                     me.callback('display', element, data);
                 } else {
@@ -189,16 +261,29 @@
             }
 
             this.params = $.extend( {}, this.params, $(this.element).data());
+            if (this.getSearchOption('params')) {
+                this.params = $.extend( {}, this.params, this.getSearchOption('params'));
+            }
 
         },
 
         render: function(element, content, template) {
+            var me = this;
             if (this.settings.render_engine == 'default') {
                 $(element).text(JSON.stringify(content));
             } else if(this.settings.render_engine == 'mustache') {
                 template = $('#'+template).html();
                 var output = Mustache.render(template, content);
                 $(element).html(output);
+
+                //bind selects on element
+                $.each($('select', element), function(){
+                    var param = $(this).data('param');
+                    if (me.params[param]) {
+                        $(this).val(me.params[param]);
+                    }
+                });
+
             } else {
                 console.error('No rendering engine found');
             }
