@@ -54,9 +54,9 @@
      */
     QUnit.test("lookup a sample purl returns the right result", function (assert) {
 
-        $fixture = $("<div data-purl='http://purl.org/au-research/grants/goyder/E.1.7'></div>");
+        $fixture = $("<div data-purl='http://purl.org/au-research/grants/arc/DP140100435'></div>");
 
-        var testPurl = "http://purl.org/au-research/grants/goyder/E.1.7";
+        var testPurl = "http://purl.org/au-research/grants/arc/DP140100435";
         $fixture.registryWidget({
             api_key: "testAPI",
             purl: testPurl,

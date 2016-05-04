@@ -35,7 +35,6 @@
 
             //set Parameters
             this.setParams();
-            // console.log(this.params, this.settings);
 
             // bind the service element
             this.service = new APIService(this.settings);
@@ -56,11 +55,11 @@
                     me.lookupAndDisplay(element, 'display-grant-tpl');
                     break;
                 case "lookup-grant":
-                    this.bindLookup($(this.element));
+                    this.bindLookup(element);
                     break;
                 case "search-grant":
-                    this.bindSearch($(this.element));
-                    this.bindLookup($(this.element));
+                    this.bindSearch(element);
+                    this.bindLookup(element);
                     break;
                 default:
                     // console.log(this.settings.mode);
@@ -120,11 +119,6 @@
             var displayOptions = {};
             if (this.settings['search_options']) {
                 if (this.settings['search_options']['facets']) {
-                    $.each(this.settings['search_options']['facets'], function(){
-                       if (this=='institution') {
-
-                       }
-                    });
                     displayOptions['facets'] = this.settings['search_options']['facets'];
                 }
             }
@@ -138,7 +132,6 @@
             var searchQuery = $('.search-query', searchContainer);
             var searchButton = $('.search-button', searchContainer);
             var searchResult = $('.search-result', searchContainer);
-            var facetSelect = $('.facet-select', searchContainer);
 
             // auto search
             if (this.settings['search_options'] && this.settings['search_options']['auto_search']) {
@@ -273,10 +266,30 @@
                 $(element).text(JSON.stringify(content));
             } else if(this.settings.render_engine == 'mustache') {
                 template = $('#'+template).html();
+
+                // todo : refactor to pre-render process -> return content
+                if (content['numFound'] && content['totalFound']) {
+                    if (content['numFound'] >= content['totalFound']) {
+                        content['more'] = false;
+                    } else {
+                        content['more'] = true;
+                    }
+                }
+
+                if (content['facets']) {
+                    $.each(content['facets'], function(idx, data) {
+                        content[idx + '_facet'] = data;
+                        content['hasfacet_'+idx] = true;
+                    });
+                }
+
+                console.log(content);
+
                 var output = Mustache.render(template, content);
                 $(element).html(output);
 
-                //bind selects on element
+                // todo : refactor to post-render process -> fix display
+                // bind selects on element (for search only)
                 $.each($('select', element), function(){
                     var param = $(this).data('param');
                     if (me.params[param]) {

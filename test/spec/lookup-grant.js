@@ -23,8 +23,8 @@
      */
     QUnit.test("lookup a sample purl returns the right result", function (assert) {
 
-        var testPurl = "http://purl.org/au-research/grants/goyder/E.1.6";
-        $fixture = $("<input type='text' id='lookup-grant' value='http://purl.org/au-research/grants/goyder/E.1.6'/>");
+        var testPurl = "http://purl.org/au-research/grants/arc/DP140100435";
+        $fixture = $("<input type='text' id='lookup-grant' value='http://purl.org/au-research/grants/arc/DP140100435'/>");
 
         $fixture.registryWidget({
             api_key: "testAPI",
