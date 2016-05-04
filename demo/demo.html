@@ -38,6 +38,31 @@
 
 <div class="container">
     <div class="row">
+
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Search for a Grant</div>
+                <div class="panel-body">
+                    <pre>&lt;input type=&quot;text&quot; id=&quot;search-grant&quot; class=&quot;form-control&quot; placeholder=&quot;Grant ID will return here. Press Open Search to begin searching&quot; value=&quot;&quot;/&gt;</pre>
+<pre>
+$(&#039;#search-grant&#039;).registryWidget({
+    api_key: &quot;public&quot;,
+    mode: &quot;search-grant&quot;
+});</pre>
+                </div>
+                <div class="panel-body">
+                    <form action="">
+                        <div class="form-group">
+                            <label for="lookup-grant">Grant ID</label>
+                            <input type="text" class="form-control search-grant"
+                                   placeholder="Grant ID will return here. Press Open Search to begin searching"
+                                   value=""/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">Display a Grant</div>
@@ -68,6 +93,9 @@
             </div>
         </div>
 
+
+
+
     </div>
 </div>
 
@@ -82,6 +110,11 @@
         $('#lookup-grant').registryWidget({
             api_key: "public",
             mode: "lookup-grant"
+        });
+
+        $('.search-grant').registryWidget({
+            api_key: "public",
+            mode: "search-grant"
         });
     });
 </script>
@@ -104,6 +137,46 @@
         {{ /researchers }}
     </dl>
     {{ /recordData }}
+</script>
+
+<script id="search-tpl" type="text/html">
+
+    <div class="well">
+        <div class="form-group">
+            <label for="lookup-grant">Search Query</label>
+            <div class="input-group">
+                <input type="text" class="form-control search-query"
+                       placeholder="Search Query"
+                       value="{{ searchQuery }}"/>
+                <span class="input-group-btn">
+                    <a href="javascript:;" class="btn btn-default search-button">Search</a>
+                </span>
+            </div>
+        </div>
+        <div class="search-result">
+            <ul>
+                {{ #recordData }}
+                <li>{{ title }}</li>
+                {{ /recordData }}
+            </ul>
+        </div>
+    </div>
+
+</script>
+
+<script id="search-result-tpl" type="text/html">
+    <ul>
+    {{ #recordData }}
+    <li>
+        <a href="javascript:;"
+           class="search-result-item"
+           data-purl="{{ purl }}"
+        >
+            {{ title }}
+        </a>
+    </li>
+    {{ /recordData }}
+    </ul>
 </script>
 
 </body>

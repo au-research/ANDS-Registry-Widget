@@ -66,6 +66,10 @@
                 case "lookup-grant":
                     this.bindLookup($(this.element));
                     break;
+                case "search-grant":
+                    this.bindSearch($(this.element));
+                    this.bindLookup($(this.element));
+                    break;
                 default:
                     // console.log(this.settings.mode);
                     break;
@@ -82,19 +86,80 @@
                 target = $("<div class='display-target'/>").insertAfter(element);
             }
 
-            $(element).on('keyup', function(){
-                me.params.purl = $(element).val();
-                me.lookupAndDisplay(target, 'display-grant-tpl');
+            me.lookup(element, target);
+
+            $(element).on('blur', function(){
+                me.lookup(element, target);
             });
 
+            $(element).on('keyup', function(){
+                me.lookup(element, target);
+            });
+
+        },
+
+        bindSearch: function (element) {
+            var me = this;
+
+            var searchToggle;
+            if ($(element).next('.search-toggle').length > 0) {
+                searchToggle = $(element).next('.search-toggle')[0];
+            } else {
+                searchToggle = $("<a href='javascript:;' class='search-toggle'>Open Search</a>").insertAfter(element);
+            }
+
+            var searchContainer;
+            if ($(searchToggle).next('.search-container').length > 0) {
+                searchContainer = $(searchToggle).next('.search-container')[0];
+            } else {
+                searchContainer = $("<div class='search-container'></div>").insertAfter(searchToggle);
+            }
+            searchContainer.hide();
+
+            this.render(searchContainer, {}, "search-tpl");
+            searchToggle.on('click', function() {
+                searchContainer.slideToggle();
+            });
+
+            var searchQuery = $('.search-query', searchContainer);
+            var searchButton = $('.search-button', searchContainer);
+            var searchResult = $('.search-result', searchContainer);
+
+            searchQuery.on('keyup', function(event) {
+                if(event.which == 13) {
+                    me.search($(searchQuery).val(), searchResult);
+                }
+            });
+
+            searchButton.on('click', function() {
+                me.search($(searchQuery).val(), searchResult);
+            });
+
+            $(searchResult).on('click', '.search-result-item', function() {
+                $(element).val($(this).data('purl'));
+                $(searchContainer).hide();
+                $(element).blur();
+            });
+        },
+
+        lookup: function(element, target) {
+            var me = this;
             if ($(element).val() != "") {
                 me.params.purl = $(element).val();
                 me.lookupAndDisplay(target, 'display-grant-tpl');
             }
         },
 
+        search: function(searchQuery, searchResultContainer) {
+            var me = this;
+            delete me.params.purl;
+            me.params.q = searchQuery;
+            me.lookupAndDisplay(searchResultContainer, 'search-result-tpl');
+        },
+
         lookupAndDisplay: function(element, template) {
             var me = this;
+            $(element).html('Loading...');
             this.service.lookup(this.params).done(function(data){
                 if (me.hasCallback('display')) {
                     me.callback('display', element, data);
