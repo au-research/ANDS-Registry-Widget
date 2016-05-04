@@ -18,7 +18,7 @@
     // Create the defaults once
     var widgetName = "registryWidget",
         defaults = {
-            mode: 'lookup-grant',
+            mode: 'display-grant',
             api_url: '',
             service_url: 'http://devl.ands.org.au/minh/api/',
             render_engine: 'default'
@@ -60,23 +60,48 @@
 
             // mode
             switch (this.settings.mode) {
+                case "display-grant":
+                    me.lookupAndDisplay(element, 'display-grant-tpl');
+                    break;
                 case "lookup-grant":
-
-                    this.service.lookup(this.params).done(function(data){
-                        if (me.hasCallback('lookup')) {
-                            me.callback('lookup', element, data);
-                        } else {
-                            console.log(data);
-                            me.render(element, data, '{{ #recordData }} <h1>{{title}}</h1> {{ /recordData }}');
-                        }
-                    });
-
-                    // console.log($(this.element).data('purl'));
+                    this.bindLookup($(this.element));
                     break;
                 default:
                     // console.log(this.settings.mode);
                     break;
             }
+        },
+
+        bindLookup: function (element) {
+            var me = this;
+
+            var target;
+            if ($(element).next('.display-target').length > 0) {
+                target = $(element).next('.display-target')[0];
+            } else {
+                target = $("<div class='display-target'/>").insertAfter(element);
+            }
+
+            $(element).on('keyup', function(){
+                me.params.purl = $(element).val();
+                me.lookupAndDisplay(target, 'display-grant-tpl');
+            });
+
+            if ($(element).val() != "") {
+                me.params.purl = $(element).val();
+                me.lookupAndDisplay(target, 'display-grant-tpl');
+            }
+        },
+
+        lookupAndDisplay: function(element, template) {
+            var me = this;
+            this.service.lookup(this.params).done(function(data){
+                if (me.hasCallback('display')) {
+                    me.callback('display', element, data);
+                } else {
+                    me.render(element, data, template);
+                }
+            });
         },
 
         hasCallback: function (event) {
@@ -114,6 +139,7 @@
             if (this.settings.render_engine == 'default') {
                 $(element).text(JSON.stringify(content));
             } else if(this.settings.render_engine == 'mustache') {
+                template = $('#'+template).html();
                 var output = Mustache.render(template, content);
                 $(element).html(output);
             } else {

@@ -3,29 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <title>ANDS Registry Widget Demo</title>
+
+    <!--jQuery-->
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+
+    <!-- Latest Bootstrap compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional Bootstrap theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest Bootstrap compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+            crossorigin="anonymous"></script>
+
+    <!--Actual Widget-->
     <script src="../src/jquery.ands.registry-widget.js"></script>
+
+    <!--Additional Libraries-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.2.1/mustache.js"></script>
 </head>
 <body>
 
-    <div id="display-grant"
-         data-purl="http://purl.org/au-research/grants/goyder/E.1.7">
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a href="#" class="navbar-brand">ANDS Registry Widget Demo</a>
+        </div>
     </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Display a Grant</div>
+                <div class="panel-body">
+                    <code>&lt;div id=&quot;display-grant&quot; data-purl=&quot;http://purl.org/au-research/grants/goyder/E.1.7&quot;&gt;&lt;/div&gt;</code>
+                </div>
+                <div class="panel-body">
+                    <div id="display-grant" data-purl="http://purl.org/au-research/grants/goyder/E.1.7"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Lookup a Grant</div>
+                <div class="panel-body">
+                    <code>&lt;input type=&quot;text&quot; id=&quot;lookup-grant&quot; value=&quot;http://purl.org/au-research/grants/goyder/E.1.7&quot;/&gt;</code>
+                </div>
+                <div class="panel-body">
+                    <form action="">
+                        <div class="form-group">
+                            <label for="lookup-grant">Grant ID</label>
+                            <input type="text" id="lookup-grant" class="form-control"
+                                   value="http://purl.org/au-research/grants/goyder/E.1.7"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 
-    <script>
-        $( function() {
+<script>
+    $(function () {
+        $('#display-grant').registryWidget({
+            api_key: "public",
+            mode: "display-grant"
+        });
 
-            $('#display-grant').registryWidget({
-                api_key: "public",
-                mode: "lookup-grant"
-            });
+        $('#lookup-grant').registryWidget({
+            api_key: "public",
+            mode: "lookup-grant"
+        });
+    });
+</script>
 
-        } );
-    </script>
-
-    <script></script>
+<script id="display-grant-tpl" type="text/html">
+    {{ #recordData }}
+    <h4>{{title}}</h4>
+    <dl>
+        {{ #purl }}
+        <dt>PURL</dt>
+        <dd>{{ purl }}</dd>
+        {{ /purl }}
+        {{ #fundingScheme }}
+        <dt>Funding Scheme</dt>
+        <dd>{{ fundingScheme }}</dd>
+        {{ /fundingScheme }}
+        {{ #researchers }}
+        <dt>Funding Scheme</dt>
+        <dd>{{ researchers }}</dd>
+        {{ /researchers }}
+    </dl>
+    {{ /recordData }}
+</script>
 
 </body>
 </html>
