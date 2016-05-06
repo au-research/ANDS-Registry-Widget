@@ -38,6 +38,7 @@
     }
 
     // Avoid ANDSRegistryWidget.prototype conflicts
+    //noinspection JSUnresolvedVariable
     $.extend( ANDSRegistryWidget.prototype, {
         init: function() {
 
@@ -74,6 +75,11 @@
                     break;
             }
         },
+
+        setQuery: function(type, value) {
+
+        },
+
 
         bindLookup: function (element) {
             var me = this;
@@ -130,6 +136,20 @@
                     displayOptions['facets'] = this.settings['search_options']['facets'];
                 }
             }
+
+            // TODO make default
+            var searchQueryOptions = [
+                { value: 'q', display: 'All'},
+                { value: 'title', display: 'Title'},
+                { value: 'description', display: 'Description'},
+                { value: 'person', display: 'Person'},
+                { value: 'id', display: 'Identifier'},
+            ];
+
+            displayOptions['search_query_options'] = searchQueryOptions;
+            displayOptions['activeQueryOptionDisplay'] = 'All';
+            displayOptions['activeQueryOptionValue'] = 'q';
+
             this.render(searchContainer, displayOptions, "search-tpl");
 
             // click event on the search toggle to open the search container
@@ -143,20 +163,39 @@
 
             // auto search
             if (this.settings['search_options'] && this.settings['search_options']['auto_search']) {
-                me.search($(searchQuery).val(), searchResult);
+                me.search(searchResult);
                 searchContainer.show();
             }
 
             // enter key for search Query
             searchQuery.on('keyup', function(event) {
                 if(event.which == 13) {
-                    me.search($(searchQuery).val(), searchResult);
+                    me.search(searchResult);
                 }
             });
 
             // click event on the search button
             searchButton.on('click', function() {
-                me.search($(searchQuery).val(), searchResult);
+                me.search(searchResult);
+            });
+
+            // setting query option
+            $('.select-query-option').on('click', function(){
+                var elem = $(this);
+                var type = elem.data('value');
+                var value = elem.val();
+
+                //clear all params and get current display of type
+                var display = '';
+                $.each(searchQueryOptions, function(){
+                    delete me.params[this.value];
+                    if (this.value == type) {
+                        display = this.display;
+                    }
+                });
+
+                me.params[type] = value;
+                $('.active-query-option', searchContainer).attr('data-value', type).html(display);
             });
 
             // click event on one of the search result item
@@ -173,7 +212,7 @@
             $(searchResult).on('change', '.facet-select', function() {
                 var param = $(this).data('param');
                 me.params[param] = $(this).val();
-                me.search($(searchQuery).val(), searchResult);
+                me.search(searchResult);
             });
 
             //bind showMore
@@ -181,7 +220,7 @@
                 var pp;
                 pp = me.params['pp'] ? me.params['pp'] : 30;
                 me.params['rows'] = me.params['rows'] ? me.params['rows'] + pp : 30 + pp;
-                me.search($(searchQuery).val(), searchResult);
+                me.search(searchResult);
             });
 
         },
@@ -194,10 +233,19 @@
             }
         },
 
-        search: function(searchQuery, searchResultContainer) {
+        search: function(searchResultContainer) {
             var me = this;
             delete me.params.purl;
-            me.params.q = searchQuery;
+
+            // correct the search query params
+            var searchContainer = $(me.element).nextAll('.search-container');
+            var searchQuery = $('.search-query', searchContainer);
+            var queryType = $('.active-query-option', searchContainer).attr('data-value');
+            if (queryType=="" || queryType === undefined) {
+                queryType = "q";
+            }
+            me.params[queryType] = searchQuery.val();
+
             me.lookupAndDisplay(searchResultContainer, 'search-result-tpl');
         },
 
@@ -221,7 +269,7 @@
             }
 
             me.service.lookup(me.params).done(function(data){
-                $(me.element).trigger("ands.registry-widget.search-complete", data);
+                me.event("search-complete", data);
                 if (me.hasCallback('display')) {
                     me.callback('display', element, data);
                 } else {
@@ -259,6 +307,14 @@
 
         },
 
+        /**
+         * Render a specific content onto a specific element
+         * Template type is provided
+         *
+         * @param element
+         * @param content
+         * @param template
+         */
         render: function(element, content, template) {
             var me = this;
             if (this.settings.render_engine == 'default') {
@@ -266,7 +322,7 @@
             } else if(this.settings.render_engine == 'mustache') {
 
                 template = me.getTemplate(template);
-                // todo : refactor to pre-render process -> return content
+                // TODO : refactor to pre-render process -> return content
                 if (content['numFound'] && content['totalFound']) {
                     content['more'] = content['numFound'] < content['totalFound'];
                 }
@@ -278,10 +334,9 @@
                     });
                 }
 
-                var output = Mustache.render(template, content);
-                $(element).html(output);
+                $(element).html(Mustache.render(template, content));
 
-                // todo : refactor to post-render process -> fix display
+                // TODO : refactor to post-render process -> fix display
                 // bind selects on element (for search only)
                 $.each($('select', element), function(){
                     var param = $(this).data('param');
@@ -291,11 +346,29 @@
                 });
 
             } else {
-                console.error('No rendering engine found');
+                me.event("error", "No rendering engine found");
             }
-            $(me.element).trigger("ands.registry-widget.render-complete", [element,content,template]);
+            me.event("render-complete", [element,content,template]);
         },
 
+        /**
+         * Trigger a jQuery event
+         * with widget specific namespace and data
+         *
+         * @param event
+         * @param data
+         */
+        event: function (event, data) {
+            var prefix = "ands.registry-widget.";
+            $(this.element).trigger(prefix + event, data);
+        },
+
+        /**
+         * Return the template string for Mustache renderer
+         *
+         * @param tpl
+         * @returns {string}
+         */
         getTemplate: function(tpl) {
             var template = "No template found!";
             var userDefinedTemplate = $('#'+tpl);
@@ -348,7 +421,7 @@
 
     var defaultTemplates = {
         'display-grant-tpl': '<div class="well"> {{ #recordData }} <h4>{{title}}</h4> <dl> {{ #purl }} <dt>PURL</dt> <dd>{{ purl }}</dd> {{ /purl }} {{ #institutions }} <dt>Institutions</dt> <dd>{{ institutions }}</dd> {{ /institutions }} {{ #funder }} <dt>Funder</dt> <dd>{{ funder }}</dd> {{ /funder }} {{ #fundingScheme }} <dt>Funding Scheme</dt> <dd>{{ fundingScheme }}</dd> {{ /fundingScheme }} {{ #researchers }} <dt>Researcher</dt> <dd>{{ researchers }}</dd> {{ /researchers }} </dl> {{ description }} {{ /recordData }} {{ ^recordData }} <p>No result found!</p> {{ /recordData}} </div>',
-        'search-tpl' : '<div class="well"> <div class="form-group"><label for="lookup-grant">Search Query</label> <div class="input-group"> <input type="text" class="form-control search-query" placeholder="Search Query" value="{{ searchQuery }}"/> <span class="input-group-btn"> <a href="javascript:;" class="btn btn-default search-button">Search</a> </span> </div> </div> <div class="search-result"></div> </div>',
+        'search-tpl' : '<div class="well"> <div class="form-group"><label for="lookup-grant">Search Query</label> <div class="input-group"> <span class="input-group-btn"> <div class="btn-group"> <button type="button" class="btn btn-default dropdown-toggle btn-select-query-option" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="value active-query-option" data-value="{{ activeQueryOptionValue }}">{{ activeQueryOptionDisplay }}</span> <span class="caret"></span></button> <ul class="dropdown-menu"> {{ #search_query_options }} <li><a href="javascript:;" class="select-query-option" data-value="{{ value }}">{{ display }}</a></li> {{ /search_query_options }} </ul> </div> </span> <input type="text" class="form-control search-query" placeholder="Search Query" value="{{ searchQuery }}"/> <span class="input-group-btn"> <a href="javascript:;" class="btn btn-default search-button">Search</a> </span> </div> </div> <div class="search-result"></div></div>',
         'search-result-tpl': '{{ #hasfacet_administering_institution }} <div class="form-group"><label for="">Institutions</label> <select class="form-control facet-select" data-param="institution"> <option value=""></option> {{ #administering_institution_facet }} <option value="{{ key }}">{{ key }}</option> {{ /administering_institution_facet }} </select> </div> {{ /hasfacet_administering_institution }} {{ #hasfacet_funders }} <div class="form-group"> <label for="">Funders</label> <select class="form-control facet-select" data-param="funder"> <option value=""></option> {{ #funders_facet }} <option value="{{ key }}">{{ key }}</option> {{ /funders_facet }} </select> </div> {{ /hasfacet_funders }} {{ #hasfacet_type }} <div class="form-group"> <label for="">Type</label> <select class="form-control facet-select" data-param="type"> <option value=""></option> {{ #type_facet }} <option value="{{ key }}">{{ key }}</option> {{ /type_facet }} </select> </div> {{ /hasfacet_type }} {{ #hasfacet_funding_scheme }} <div class="form-group"><label for="">Funding Scheme</label><select class="form-control facet-select" data-param="fundingScheme"><option value=""></option> {{ #funding_scheme_facet }} <option value="{{ key }}">{{ key }}</option> {{ /funding_scheme_facet }} </select> </div> {{ /hasfacet_funding_scheme }} <ul> {{ #recordData }} <li><a href="javascript:;" class="search-result-item" data-purl="{{ purl }}"> {{ title }} </a> </li> {{ /recordData }} </ul> <p>Displaying ({{ numFound }}/{{ totalFound }}) results</p> {{ #more }} <a href="javascript:;" class="show-more">Show More</a> {{ /more }}{{ ^recordData }}<p>No result found!</p>{{ /recordData }}'
     }
 

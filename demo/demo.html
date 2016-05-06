@@ -213,6 +213,17 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
             <label for="lookup-grant">Search Query</label>
 
             <div class="input-group">
+                <span class="input-group-btn">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle btn-select-query-option" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false"><span class="value active-query-option" data-value="{{ activeQueryOptionValue }}">{{ activeQueryOptionDisplay }}</span> <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            {{ #search_query_options }}
+                                <li><a href="javascript:;" class="select-query-option" data-value="{{ value }}">{{ display }}</a></li>
+                            {{ /search_query_options }}
+                        </ul>
+                    </div>
+                </span>
                 <input type="text" class="form-control search-query"
                        placeholder="Search Query"
                        value="{{ searchQuery }}"/>
