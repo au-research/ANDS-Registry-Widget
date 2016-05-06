@@ -5,12 +5,17 @@
     <link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css" type="text/css" media="screen">
     <script type="text/javascript" src="../node_modules/qunitjs/qunit/qunit.js"></script>
 
+    <!--Dependencies-->
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="../src/jquery.ands.registry-widget.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.2.1/mustache.js"></script>
 
-    <!-- Your tests file goes here -->
+    <!-- Test files -->
+    <script type="text/javascript" src="spec/widget-generation.js"></script>
     <script type="text/javascript" src="spec/display-grant.js"></script>
     <script type="text/javascript" src="spec/lookup-grant.js"></script>
+    <script type="text/javascript" src="spec/search-grant.js"></script>
+
 </head>
 <body>
 <h1 id="qunit-header">QUnit Test Suite</h1>
@@ -19,23 +24,94 @@
 <h2 id="qunit-userAgent"></h2>
 <ol id="qunit-tests"></ol>
 
-<script id="display-grant-tpl" type="text/html">
-    {{ #recordData }}
-    <h4>{{title}}</h4>
-    <dl>
-        {{ #purl }}
-        <dt>PURL</dt>
-        <dd>{{ purl }}</dd>
-        {{ /purl }}
-        {{ #fundingScheme }}
-        <dt>Funding Scheme</dt>
-        <dd>{{ fundingScheme }}</dd>
-        {{ /fundingScheme }}
-        {{ #researchers }}
-        <dt>Funding Scheme</dt>
-        <dd>{{ researchers }}</dd>
-        {{ /researchers }}
-    </dl>
+<script id="search-tpl" type="text/html">
+    <div class="well">
+        <div class="form-group">
+            <label for="lookup-grant">Search Query</label>
+
+            <div class="input-group">
+                <input type="text" class="form-control search-query"
+                       placeholder="Search Query"
+                       value="{{ searchQuery }}"/>
+                <span class="input-group-btn">
+                    <a href="javascript:;" class="btn btn-default search-button">Search</a>
+                </span>
+            </div>
+        </div>
+        <div class="search-result"></div>
+    </div>
+</script>
+
+<script id="search-result-tpl" type="text/html">
+    {{ #hasfacet_administering_institution }}
+    <div class="form-group">
+        <label for="">Institutions</label>
+        <select class="form-control facet-select" data-param="institution">
+            <option value=""></option>
+            {{ #administering_institution_facet }}
+            <option value="{{ key }}">{{ key }}</option>
+            {{ /administering_institution_facet }}
+        </select>
+    </div>
+    {{ /hasfacet_administering_institution }}
+
+    {{ #hasfacet_funders }}
+    <div class="form-group">
+        <label for="">Funders</label>
+        <select class="form-control facet-select" data-param="funder">
+            <option value=""></option>
+            {{ #funders_facet }}
+            <option value="{{ key }}">{{ key }}</option>
+            {{ /funders_facet }}
+        </select>
+    </div>
+    {{ /hasfacet_funders }}
+
+    {{ #hasfacet_type }}
+    <div class="form-group">
+        <label for="">Type</label>
+        <select class="form-control facet-select" data-param="type">
+            <option value=""></option>
+            {{ #type_facet }}
+            <option value="{{ key }}">{{ key }}</option>
+            {{ /type_facet }}
+        </select>
+    </div>
+    {{ /hasfacet_type }}
+
+    {{ #hasfacet_funding_scheme }}
+    <div class="form-group">
+        <label for="">Funding Scheme</label>
+        <select class="form-control facet-select" data-param="fundingScheme">
+            <option value=""></option>
+            {{ #funding_scheme_facet }}
+            <option value="{{ key }}">{{ key }}</option>
+            {{ /funding_scheme_facet }}
+        </select>
+    </div>
+    {{ /hasfacet_funding_scheme }}
+
+    <ul>
+        {{ #recordData }}
+        <li>
+            <a href="javascript:;"
+               class="search-result-item"
+               data-purl="{{ purl }}"
+            >
+                {{ title }}
+            </a>
+        </li>
+        {{ /recordData }}
+    </ul>
+
+    <p>Displaying ({{ numFound }}/{{ totalFound }}) results</p>
+    {{ #more }}
+    <a href="javascript:;" class="show-more">Show More</a>
+    {{ /more }}
+
+
+    {{ ^recordData }}
+    <p>No result found!</p>
     {{ /recordData }}
 </script>
 

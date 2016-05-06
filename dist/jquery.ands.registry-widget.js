@@ -134,7 +134,7 @@
 
             // click event on the search toggle to open the search container
             searchToggle.on('click', function() {
-                searchContainer.slideToggle();
+                searchContainer.toggle();
             });
 
             var searchQuery = $('.search-query', searchContainer);
@@ -163,21 +163,16 @@
             $(searchResult).on('click', '.search-result-item', function() {
                 $(element).val($(this).data('purl'));
                 $(searchContainer).hide();
-
                 $(element).blur();
-
-                //todo configurable?
-                $('html, body').animate({
-                    scrollTop: $(element).offset().top
-                }, 500);
-
+                if (me.hasCallback('post-select-result-item')) {
+                    me.callback('post-select-result-item', $(this), $(element));
+                }
             });
 
             //bind facetSelect
             $(searchResult).on('change', '.facet-select', function() {
                 var param = $(this).data('param');
-                var value = $(this).val();
-                me.params[param] = value;
+                me.params[param] = $(this).val();
                 me.search($(searchQuery).val(), searchResult);
             });
 
@@ -226,6 +221,7 @@
             }
 
             me.service.lookup(me.params).done(function(data){
+                $(me.element).trigger("ands.registry-widget.search-complete", data);
                 if (me.hasCallback('display')) {
                     me.callback('display', element, data);
                 } else {
@@ -235,14 +231,9 @@
         },
 
         hasCallback: function (event) {
-            if (this.settings.hasOwnProperty('evt')
-                && this.settings.evt.hasOwnProperty(event)
-                && typeof this.settings.evt[event] == 'function'
-            ) {
-                return true;
-            } else {
-                return false;
-            }
+            return !!(this.settings.hasOwnProperty('evt')
+            && this.settings.evt.hasOwnProperty(event)
+            && typeof this.settings.evt[event] == 'function');
         },
 
         callback: function(event, element, data) {
@@ -273,15 +264,11 @@
             if (this.settings.render_engine == 'default') {
                 $(element).text(JSON.stringify(content));
             } else if(this.settings.render_engine == 'mustache') {
-                template = $('#'+template).html();
 
+                template = me.getTemplate(template);
                 // todo : refactor to pre-render process -> return content
                 if (content['numFound'] && content['totalFound']) {
-                    if (content['numFound'] >= content['totalFound']) {
-                        content['more'] = false;
-                    } else {
-                        content['more'] = true;
-                    }
+                    content['more'] = content['numFound'] < content['totalFound'];
                 }
 
                 if (content['facets']) {
@@ -290,8 +277,6 @@
                         content['hasfacet_'+idx] = true;
                     });
                 }
-
-                console.log(content);
 
                 var output = Mustache.render(template, content);
                 $(element).html(output);
@@ -308,8 +293,21 @@
             } else {
                 console.error('No rendering engine found');
             }
-        }
+            $(me.element).trigger("ands.registry-widget.render-complete", [element,content,template]);
+        },
 
+        getTemplate: function(tpl) {
+            var template = "No template found!";
+            var userDefinedTemplate = $('#'+tpl);
+
+            if (userDefinedTemplate.length > 0) {
+                template = userDefinedTemplate.html();
+            } else if (defaultTemplates[tpl]) {
+                template = defaultTemplates[tpl];
+            }
+
+            return template;
+        }
 
     } );
 
@@ -347,5 +345,12 @@
             }
         }
     }
+
+    var defaultTemplates = {
+        'display-grant-tpl': '<div class="well"> {{ #recordData }} <h4>{{title}}</h4> <dl> {{ #purl }} <dt>PURL</dt> <dd>{{ purl }}</dd> {{ /purl }} {{ #institutions }} <dt>Institutions</dt> <dd>{{ institutions }}</dd> {{ /institutions }} {{ #funder }} <dt>Funder</dt> <dd>{{ funder }}</dd> {{ /funder }} {{ #fundingScheme }} <dt>Funding Scheme</dt> <dd>{{ fundingScheme }}</dd> {{ /fundingScheme }} {{ #researchers }} <dt>Researcher</dt> <dd>{{ researchers }}</dd> {{ /researchers }} </dl> {{ description }} {{ /recordData }} {{ ^recordData }} <p>No result found!</p> {{ /recordData}} </div>',
+        'search-tpl' : '<div class="well"> <div class="form-group"><label for="lookup-grant">Search Query</label> <div class="input-group"> <input type="text" class="form-control search-query" placeholder="Search Query" value="{{ searchQuery }}"/> <span class="input-group-btn"> <a href="javascript:;" class="btn btn-default search-button">Search</a> </span> </div> </div> <div class="search-result"></div> </div>',
+        'search-result-tpl': '{{ #hasfacet_administering_institution }} <div class="form-group"><label for="">Institutions</label> <select class="form-control facet-select" data-param="institution"> <option value=""></option> {{ #administering_institution_facet }} <option value="{{ key }}">{{ key }}</option> {{ /administering_institution_facet }} </select> </div> {{ /hasfacet_administering_institution }} {{ #hasfacet_funders }} <div class="form-group"> <label for="">Funders</label> <select class="form-control facet-select" data-param="funder"> <option value=""></option> {{ #funders_facet }} <option value="{{ key }}">{{ key }}</option> {{ /funders_facet }} </select> </div> {{ /hasfacet_funders }} {{ #hasfacet_type }} <div class="form-group"> <label for="">Type</label> <select class="form-control facet-select" data-param="type"> <option value=""></option> {{ #type_facet }} <option value="{{ key }}">{{ key }}</option> {{ /type_facet }} </select> </div> {{ /hasfacet_type }} {{ #hasfacet_funding_scheme }} <div class="form-group"><label for="">Funding Scheme</label><select class="form-control facet-select" data-param="fundingScheme"><option value=""></option> {{ #funding_scheme_facet }} <option value="{{ key }}">{{ key }}</option> {{ /funding_scheme_facet }} </select> </div> {{ /hasfacet_funding_scheme }} <ul> {{ #recordData }} <li><a href="javascript:;" class="search-result-item" data-purl="{{ purl }}"> {{ title }} </a> </li> {{ /recordData }} </ul> <p>Displaying ({{ numFound }}/{{ totalFound }}) results</p> {{ #more }} <a href="javascript:;" class="show-more">Show More</a> {{ /more }}{{ ^recordData }}<p>No result found!</p>{{ /recordData }}'
+    }
+
 
 } )( jQuery, window, document );

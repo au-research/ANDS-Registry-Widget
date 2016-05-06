@@ -43,6 +43,8 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Search for a Grant</div>
                 <div class="panel-body">
+                    <p class="alert alert-info">The default search configuration. Searches through the <code>q</code>
+                        parameter of the API</p>
                     <pre>&lt;input type=&quot;text&quot; id=&quot;search-grant&quot; class=&quot;form-control&quot; value=&quot;&quot;/&gt;</pre>
 <pre>
 $(&#039;#search-grant&#039;).registryWidget({
@@ -67,6 +69,9 @@ $(&#039;#search-grant&#039;).registryWidget({
             <div class="panel panel-default">
                 <div class="panel-heading">Advanced Search for a Grant</div>
                 <div class="panel-body">
+                    <p class="alert alert-info">
+                        This configuration supports the default funder, rows and display of several facets
+                    </p>
                     <pre>&lt;input type=&quot;text&quot; id=&quot;search-grant&quot; class=&quot;form-control&quot; value=&quot;&quot;/&gt;</pre>
 <pre>
 $(&#039;.advanced-search-grant&#039;).registryWidget({
@@ -100,6 +105,8 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
             <div class="panel panel-default">
                 <div class="panel-heading">Display a Grant</div>
                 <div class="panel-body">
+                    <p class="alert alert-info">Display of a grant knowing the purl or any identifier value. Using the
+                        provided Mustache Template</p>
                     <code>&lt;div id=&quot;display-grant&quot; data-purl=&quot;http://purl.org/au-research/grants/arc/DP140100435&quot;&gt;&lt;/div&gt;</code>
                 </div>
                 <div class="panel-body">
@@ -112,6 +119,8 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
             <div class="panel panel-default">
                 <div class="panel-heading">Lookup a Grant</div>
                 <div class="panel-body">
+                    <p class="alert alert-info">Simple example of looking up for a grant. Support looking up of multiple
+                        grants that match the identifier search value</p>
                     <code>&lt;input type=&quot;text&quot; id=&quot;lookup-grant&quot; value=&quot;http://purl.org/au-research/grants/arc/DP140100435&quot;/&gt;</code>
                 </div>
                 <div class="panel-body">
@@ -169,22 +178,40 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
         {{ #recordData }}
         <h4>{{title}}</h4>
         <dl>
-            {{ #purl }} <dt>PURL</dt> <dd>{{ purl }}</dd> {{ /purl }}
-            {{ #institutions }} <dt>Institutions</dt> <dd>{{ institutions }}</dd> {{ /institutions }}
-            {{ #funder }} <dt>Funder</dt> <dd>{{ funder }}</dd> {{ /funder }}
-            {{ #fundingScheme }} <dt>Funding Scheme</dt> <dd>{{ fundingScheme }}</dd> {{ /fundingScheme }}
-            {{ #researchers }} <dt>Researcher</dt> <dd>{{ researchers }}</dd> {{ /researchers }}
+            {{ #purl }}
+            <dt>PURL</dt>
+            <dd>{{ purl }}</dd>
+            {{ /purl }}
+            {{ #institutions }}
+            <dt>Institutions</dt>
+            <dd>{{ institutions }}</dd>
+            {{ /institutions }}
+            {{ #funder }}
+            <dt>Funder</dt>
+            <dd>{{ funder }}</dd>
+            {{ /funder }}
+            {{ #fundingScheme }}
+            <dt>Funding Scheme</dt>
+            <dd>{{ fundingScheme }}</dd>
+            {{ /fundingScheme }}
+            {{ #researchers }}
+            <dt>Researcher</dt>
+            <dd>{{ researchers }}</dd>
+            {{ /researchers }}
         </dl>
         {{ description }}
         {{ /recordData }}
+        {{ ^recordData }}
+        <p>No result found!</p>
+        {{ /recordData}}
     </div>
 </script>
 
 <script id="search-tpl" type="text/html">
-
     <div class="well">
         <div class="form-group">
             <label for="lookup-grant">Search Query</label>
+
             <div class="input-group">
                 <input type="text" class="form-control search-query"
                        placeholder="Search Query"
@@ -194,36 +221,33 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
                 </span>
             </div>
         </div>
-        <div class="search-result">
-
-        </div>
+        <div class="search-result"></div>
     </div>
-
 </script>
 
 <script id="search-result-tpl" type="text/html">
     {{ #hasfacet_administering_institution }}
-        <div class="form-group">
-            <label for="">Institutions</label>
-            <select class="form-control facet-select" data-param="institution">
-                <option value=""></option>
-                {{ #administering_institution_facet }}
-                <option value="{{ key }}">{{ key }}</option>
-                {{ /administering_institution_facet }}
-            </select>
-        </div>
+    <div class="form-group">
+        <label for="">Institutions</label>
+        <select class="form-control facet-select" data-param="institution">
+            <option value=""></option>
+            {{ #administering_institution_facet }}
+            <option value="{{ key }}">{{ key }}</option>
+            {{ /administering_institution_facet }}
+        </select>
+    </div>
     {{ /hasfacet_administering_institution }}
 
     {{ #hasfacet_funders }}
-        <div class="form-group">
-            <label for="">Funders</label>
-            <select class="form-control facet-select" data-param="funder">
-                <option value=""></option>
-                {{ #funders_facet }}
-                <option value="{{ key }}">{{ key }}</option>
-                {{ /funders_facet }}
-            </select>
-        </div>
+    <div class="form-group">
+        <label for="">Funders</label>
+        <select class="form-control facet-select" data-param="funder">
+            <option value=""></option>
+            {{ #funders_facet }}
+            <option value="{{ key }}">{{ key }}</option>
+            {{ /funders_facet }}
+        </select>
+    </div>
     {{ /hasfacet_funders }}
 
     {{ #hasfacet_type }}
@@ -262,10 +286,16 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
         </li>
         {{ /recordData }}
     </ul>
+
     <p>Displaying ({{ numFound }}/{{ totalFound }}) results</p>
     {{ #more }}
     <a href="javascript:;" class="show-more">Show More</a>
     {{ /more }}
+
+
+    {{ ^recordData }}
+    <p>No result found!</p>
+    {{ /recordData }}
 </script>
 
 </body>

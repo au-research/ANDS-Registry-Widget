@@ -32,17 +32,19 @@
         });
 
         var done = assert.async();
-        setTimeout(function() {
+        setTimeout(function () {
             var pluginData = $fixture.data("plugin_registryWidget");
 
-            pluginData.service.lookup(pluginData.params).then(function(data) {
-                console.log($fixture.next('.display-target'));
+            pluginData.service.lookup(pluginData.params).then(function (data) {
+                var displayTarget = $fixture.next('.display-target');
+                assert.equal(true, displayTarget.length > 0, 'display target is generated');
+                assert.equal(true, displayTarget.html().length > 0, 'display target has some content');
                 assert.equal(true, data['recordData'].length > 0, "has some record data returned in the lookup");
                 assert.equal(1, data['totalFound'], 'found 1 result');
                 assert.equal(testPurl, data['recordData'][0]['purl'], "has the same PURL")
                 done();
             });
-        },0);
+        }, 0);
 
     });
 
