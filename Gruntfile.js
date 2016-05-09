@@ -60,14 +60,20 @@ module.exports = function( grunt ) {
                 configFile: "karma.conf.js",
                 background: true,
                 singleRun: false,
-                browsers: [ "PhantomJS", "Firefox" ]
+                browsers: [ "PhantomJS", "Firefox", "Chrome", "ChromeNoSecurity", "Safari" ],
             },
 
             //continuous integration mode: run tests once in PhantomJS browser.
             travis: {
                 configFile: "karma.conf.js",
                 singleRun: true,
-                browsers: [ "PhantomJS" ]
+                browsers: [ "PhantomJS", "Firefox", "Chrome", "ChromeNoSecurity", "Safari" ],
+                customLaunchers: {
+                    ChromeNoSecurity: {
+                        base: "Chrome",
+                        flags: [ "--disable-web-security" ]
+                    }
+                }
             }
         },
 
@@ -92,5 +98,5 @@ module.exports = function( grunt ) {
     grunt.registerTask( "travis", [ "jshint", "karma:travis" ] );
     grunt.registerTask( "lint", [ "jshint", "jscs" ] );
     grunt.registerTask( "build", [ "concat", "uglify" ] );
-    grunt.registerTask( "default", [ "jshint", "build", "karma" ] );
+    grunt.registerTask( "default", [ "jshint", "build", "karma:unit" ] );
 };

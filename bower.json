@@ -14,7 +14,8 @@
   ],
   "main": "src/jquery.ands.registry-widget.js",
   "dependencies": {
-    "jquery": "1"
+    "jquery": "1",
+    "mustache.js": "mustache#^2.2.1"
   },
   "ignore": [
     "npm-debug.log",

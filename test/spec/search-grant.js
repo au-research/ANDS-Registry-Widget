@@ -60,6 +60,47 @@
     } );
 
     /**
+     * Test if facets displays
+     * in autoSearch mode
+     */
+    QUnit.test( "advanced search html generation", function( assert ) {
+
+        var done = assert.async();
+
+        $fixture.registryWidget( {
+            apiKey: "testAPI",
+            mode: "search-grant",
+            searchOptions: {
+                autoSearch: true,
+                facets: [ "institutions", "funders", "type", "fundingScheme" ]
+            }
+        } );
+
+        var searchContainer = $fixture.nextAll( ".search-container" );
+
+        $fixture.on( "ands.registry-widget.render-complete", function( ) {
+
+            assert.equal( true,
+                $( "select[data-param=institution]", searchContainer ).length > 0,
+                "institutions facet select is available" );
+
+            assert.equal( true,
+                $( "select[data-param=funder]", searchContainer ).length > 0,
+                "funders facet select is available" );
+
+            assert.equal( true,
+                $( "select[data-param=type]", searchContainer ).length > 0,
+                "type facet select is available" );
+
+            assert.equal( true,
+                $( "select[data-param=fundingScheme]", searchContainer ).length > 0,
+                "fundingScheme facet select is available" );
+
+            done();
+        } );
+    } );
+
+    /**
      * Can't actually find if an $fixture.is(":visible")
      * because the element is not attached to the DOM somehow
      * so checking for css display property
