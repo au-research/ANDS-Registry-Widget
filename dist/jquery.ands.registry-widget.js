@@ -398,6 +398,7 @@ APIService = ( function( $, window, document, undefined ) {
                 { value: "title", display: "Title" },
                 { value: "description", display: "Description" },
                 { value: "person", display: "Person" },
+                { value: "principalInvestigator", display: "Principal Investigator" },
                 { value: "id", display: "Identifier" }
             ];
 
