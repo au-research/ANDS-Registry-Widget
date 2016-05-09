@@ -54,7 +54,7 @@
             var me = this;
 
             //set rendering engine to the preferred one
-            if ( typeof Mustache == "object" ) {
+            if ( typeof Mustache === "object" ) {
                 this.settings.renderEngine = "mustache";
             }
 
@@ -111,12 +111,13 @@
 
         bindSearch: function( element ) {
             var me = this;
+            var dom ;
 
             var searchToggle;
             if ( $( element ).next( ".search-toggle" ).length > 0 ) {
                 searchToggle = $( element ).next( ".search-toggle" )[ 0 ];
             } else {
-                var dom = "<a href='javascript:;' class='search-toggle'>" +
+                dom = "<a href='javascript:;' class='search-toggle'>" +
                                 "Open Search" +
                             "</a>";
                 searchToggle = $( dom ).insertAfter( element );
@@ -126,7 +127,7 @@
             if ( $( searchToggle ).next( ".search-container" ).length > 0 ) {
                 searchContainer = $( searchToggle ).next( ".search-container" )[ 0 ];
             } else {
-                var dom = "<div class='search-container'></div>";
+                dom = "<div class='search-container'></div>";
                 searchContainer = $( dom ).insertAfter( searchToggle );
             }
             searchContainer.hide();
@@ -171,7 +172,7 @@
 
             // enter key for search Query
             searchQuery.on( "keyup", function( event ) {
-                if ( event.which == 13 ) {
+                if ( event.which === 13 ) {
                     me.search( searchResult );
                 }
             } );
@@ -191,7 +192,7 @@
                 var display = "";
                 $.each( searchQueryOptions, function() {
                     delete me.params[ this.value ];
-                    if ( this.value == type ) {
+                    if ( this.value === type ) {
                         display = this.display;
                     }
                 } );
@@ -228,8 +229,8 @@
 
         lookup: function( element, target ) {
             var me = this;
-            if ( $( element ).val() != "" &&
-                me.params.purl != $( element ).val() )
+            if ( $( element ).val() !== "" &&
+                me.params.purl !== $( element ).val() )
             {
                 me.params.purl = $( element ).val();
                 me.lookupAndDisplay( target, "display-grant-tpl" );
@@ -245,7 +246,7 @@
             var searchQuery = $( ".search-query", searchContainer );
             var queryType = $( ".active-query-option", searchContainer )
                 .attr( "data-value" );
-            if ( queryType == "" || queryType === undefined ) {
+            if ( queryType === "" || queryType === undefined ) {
                 queryType = "q";
             }
             me.params[ queryType ] = searchQuery.val();
@@ -266,7 +267,7 @@
         lookupAndDisplay: function( element, template ) {
             var me = this;
 
-            if ( $( element ).text() == "" ) {
+            if ( $( element ).text() === "" ) {
                 $( element ).text( "Loading..." );
             }
 
@@ -314,9 +315,9 @@
          */
         render: function( element, content, template ) {
             var me = this;
-            if ( this.settings.renderEngine == "default" ) {
+            if ( this.settings.renderEngine === "default" ) {
                 $( element ).text( JSON.stringify( content ) );
-            } else if ( this.settings.renderEngine == "mustache" ) {
+            } else if ( this.settings.renderEngine === "mustache" ) {
 
                 template = me.getTemplate( template );
 
@@ -443,7 +444,7 @@
     displayGrantTemplate += "            <dd>{{ fundingScheme }}<\/dd>";
     displayGrantTemplate += "            {{ \/fundingScheme }}";
     displayGrantTemplate += "            {{ #researchers }}";
-    displayGrantTemplate += "            <dt>Researcher<\/dt>";
+    displayGrantTemplate += "            <dt>Researchers<\/dt>";
     displayGrantTemplate += "            <dd>{{ researchers }}<\/dd>";
     displayGrantTemplate += "            {{ \/researchers }}";
     displayGrantTemplate += "        <\/dl>";

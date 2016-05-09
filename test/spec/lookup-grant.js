@@ -1,52 +1,70 @@
-( function ($, QUnit) {
+( function( $, QUnit ) {
 
     "use strict";
 
-    var $testCanvas = $("#testCanvas");
+    var $testCanvas = $( "#testCanvas" );
     var $fixture = null;
 
-    QUnit.module("ANDS Registry Widget - Lookup Grant", {
-        beforeEach: function () {
+    QUnit.module( "ANDS Registry Widget - Lookup Grant", {
+        beforeEach: function() {
+
             // fixture is the element where your jQuery plugin will act
-            $fixture = $("<div/>");
-            $testCanvas.append($fixture);
+            $fixture = $( "<div/>" );
+            $testCanvas.append( $fixture );
         },
-        afterEach: function () {
+        afterEach: function() {
+
             // we remove the element to reset our plugin job :)
             $fixture.remove();
         }
-    });
+    } );
 
     /**
      * todo test lookup using id field
      * todo test lookup callback
      */
-    QUnit.test("lookup a sample purl returns the right result", function (assert) {
+    QUnit.test( "lookup a sample purl returns the right result", function( assert ) {
 
+        var dom = "<input " +
+            "type='text' " +
+            "id='lookup-grant' " +
+            "value='http://purl.org/au-research/grants/arc/DP140100435'/>";
         var testPurl = "http://purl.org/au-research/grants/arc/DP140100435";
-        $fixture = $("<input type='text' id='lookup-grant' value='http://purl.org/au-research/grants/arc/DP140100435'/>");
+        $fixture = $( dom );
 
-        $fixture.registryWidget({
-            api_key: "testAPI",
+        $fixture.registryWidget( {
+            apiKey: "testAPI",
             mode: "lookup-grant"
-        });
+        } );
 
         var done = assert.async();
-        setTimeout(function () {
-            var pluginData = $fixture.data("plugin_registryWidget");
+        setTimeout( function() {
+            var pluginData = $fixture.data( "plugin_registryWidget" );
 
-            pluginData.service.lookup(pluginData.params).then(function (data) {
-                var displayTarget = $fixture.next('.display-target');
-                assert.equal(true, displayTarget.length > 0, 'display target is generated');
-                assert.equal(true, displayTarget.html().length > 0, 'display target has some content');
-                assert.equal(true, data['recordData'].length > 0, "has some record data returned in the lookup");
-                assert.equal(1, data['totalFound'], 'found 1 result');
-                assert.equal(testPurl, data['recordData'][0]['purl'], "has the same PURL")
+            pluginData.service.lookup( pluginData.params ).then( function( data ) {
+                var displayTarget = $fixture.next( ".display-target" );
+
+                assert.equal( true,
+                    displayTarget.length > 0,
+                    "display target is generated" );
+                assert.equal( true,
+                    displayTarget.html().length > 0,
+                    "display target has some content" );
+
+                assert.equal( true,
+                    data.recordData.length > 0,
+                    "has some record data returned in the lookup" );
+
+                assert.equal( 1, data.totalFound, "found 1 result" );
+
+                assert.equal( testPurl,
+                    data.recordData[ 0 ].purl,
+                    "has the same PURL" );
+
                 done();
-            });
-        }, 0);
+            } );
+        }, 0 );
 
-    });
+    } );
 
-
-}(jQuery, QUnit) );
+}( jQuery, QUnit ) );

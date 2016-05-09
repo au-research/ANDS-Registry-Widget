@@ -30,7 +30,7 @@ module.exports = function( grunt ) {
 
         // Lint definitions
         jshint: {
-            files: [ "src/jquery.ands.registry-widget.js", "test/**/*" ],
+            files: [ "src/jquery.ands.registry-widget.js", "test/**/*.js" ],
             options: {
                 jshintrc: ".jshintrc"
             }
@@ -76,7 +76,7 @@ module.exports = function( grunt ) {
         // (call 'grunt watch')
         watch: {
             files: [ "src/*", "test/**/*" ],
-            tasks: [ "build" ]
+            tasks: [ "default" ]
         }
 
     } );
@@ -92,5 +92,5 @@ module.exports = function( grunt ) {
     grunt.registerTask( "travis", [ "jshint", "karma:travis" ] );
     grunt.registerTask( "lint", [ "jshint", "jscs" ] );
     grunt.registerTask( "build", [ "concat", "uglify" ] );
-    grunt.registerTask( "default", [ "jshint", "build", "karma:unit:run" ] );
+    grunt.registerTask( "default", [ "jshint", "build", "karma" ] );
 };
