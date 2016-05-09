@@ -77,8 +77,8 @@ $(&#039;#search-grant&#039;).registryWidget({
 $(&#039;.advanced-search-grant&#039;).registryWidget({
     api_key: &quot;public&quot;,
     mode: &quot;search-grant&quot;,
-    search_options: {
-        auto_search: true,
+    searchOptions: {
+        autoSearch: true,
         facets: [&#039;institutions&#039;, &#039;funders&#039;, &#039;type&#039;, &#039;fundingScheme&#039;],
         params: {
             funder: &#039;Department of the Environment&#039;,
@@ -158,10 +158,10 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
         });
 
         $('.advanced-search-grant').registryWidget({
-            api_key: "public",
+            apiKey: "public",
             mode: "search-grant",
-            search_options: {
-                auto_search: true,
+            searchOptions: {
+                autoSearch: true,
                 facets: ['institutions', 'funders', 'type', 'fundingScheme'],
                 params: {
                     funder: 'Department of the Environment',
@@ -207,106 +207,77 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
     </div>
 </script>
 
-<script id="search-tpl" type="text/html">
-    <div class="well">
-        <div class="form-group">
-            <label for="lookup-grant">Search Query</label>
-
-            <div class="input-group">
-                <span class="input-group-btn">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default dropdown-toggle btn-select-query-option" data-toggle="dropdown" aria-haspopup="true"
-                                aria-expanded="false"><span class="value active-query-option" data-value="{{ activeQueryOptionValue }}">{{ activeQueryOptionDisplay }}</span> <span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                            {{ #search_query_options }}
-                                <li><a href="javascript:;" class="select-query-option" data-value="{{ value }}">{{ display }}</a></li>
-                            {{ /search_query_options }}
-                        </ul>
-                    </div>
-                </span>
-                <input type="text" class="form-control search-query"
-                       placeholder="Search Query"
-                       value="{{ searchQuery }}"/>
-                <span class="input-group-btn">
-                    <a href="javascript:;" class="btn btn-default search-button">Search</a>
-                </span>
-            </div>
-        </div>
-        <div class="search-result"></div>
-    </div>
-</script>
-
 <script id="search-result-tpl" type="text/html">
-    {{ #hasfacet_administering_institution }}
-    <div class="form-group">
-        <label for="">Institutions</label>
-        <select class="form-control facet-select" data-param="institution">
-            <option value=""></option>
-            {{ #administering_institution_facet }}
-            <option value="{{ key }}">{{ key }}</option>
-            {{ /administering_institution_facet }}
-        </select>
-    </div>
-    {{ /hasfacet_administering_institution }}
+{{ #hasfacet_administering_institution }}
+<div class="form-group">
+    <label for="">Institutions</label>
+    <select class="form-control facet-select" data-param="institution">
+        <option value=""></option>
+        {{ #administering_institution_facet }}
+        <option value="{{ key }}">{{ key }}</option>
+        {{ /administering_institution_facet }}
+    </select>
+</div>
+{{ /hasfacet_administering_institution }}
 
-    {{ #hasfacet_funders }}
-    <div class="form-group">
-        <label for="">Funders</label>
-        <select class="form-control facet-select" data-param="funder">
-            <option value=""></option>
-            {{ #funders_facet }}
-            <option value="{{ key }}">{{ key }}</option>
-            {{ /funders_facet }}
-        </select>
-    </div>
-    {{ /hasfacet_funders }}
+{{ #hasfacet_funders }}
+<div class="form-group">
+    <label for="">Funders</label>
+    <select class="form-control facet-select" data-param="funder">
+        <option value=""></option>
+        {{ #funders_facet }}
+        <option value="{{ key }}">{{ key }}</option>
+        {{ /funders_facet }}
+    </select>
+</div>
+{{ /hasfacet_funders }}
 
-    {{ #hasfacet_type }}
-    <div class="form-group">
-        <label for="">Type</label>
-        <select class="form-control facet-select" data-param="type">
-            <option value=""></option>
-            {{ #type_facet }}
-            <option value="{{ key }}">{{ key }}</option>
-            {{ /type_facet }}
-        </select>
-    </div>
-    {{ /hasfacet_type }}
+{{ #hasfacet_type }}
+<div class="form-group">
+    <label for="">Type</label>
+    <select class="form-control facet-select" data-param="type">
+        <option value=""></option>
+        {{ #type_facet }}
+        <option value="{{ key }}">{{ key }}</option>
+        {{ /type_facet }}
+    </select>
+</div>
+{{ /hasfacet_type }}
 
-    {{ #hasfacet_funding_scheme }}
-    <div class="form-group">
-        <label for="">Funding Scheme</label>
-        <select class="form-control facet-select" data-param="fundingScheme">
-            <option value=""></option>
-            {{ #funding_scheme_facet }}
-            <option value="{{ key }}">{{ key }}</option>
-            {{ /funding_scheme_facet }}
-        </select>
-    </div>
-    {{ /hasfacet_funding_scheme }}
+{{ #hasfacet_funding_scheme }}
+<div class="form-group">
+    <label for="">Funding Scheme</label>
+    <select class="form-control facet-select" data-param="fundingScheme">
+        <option value=""></option>
+        {{ #funding_scheme_facet }}
+        <option value="{{ key }}">{{ key }}</option>
+        {{ /funding_scheme_facet }}
+    </select>
+</div>
+{{ /hasfacet_funding_scheme }}
 
-    <ul>
-        {{ #recordData }}
-        <li>
-            <a href="javascript:;"
-               class="search-result-item"
-               data-purl="{{ purl }}"
-            >
-                {{ title }}
-            </a>
-        </li>
-        {{ /recordData }}
-    </ul>
-
-    <p>Displaying ({{ numFound }}/{{ totalFound }}) results</p>
-    {{ #more }}
-    <a href="javascript:;" class="show-more">Show More</a>
-    {{ /more }}
-
-
-    {{ ^recordData }}
-    <p>No result found!</p>
+<ul>
+    {{ #recordData }}
+    <li>
+        <a href="javascript:;"
+           class="search-result-item"
+           data-purl="{{ purl }}"
+        >
+            {{ title }}
+        </a>
+    </li>
     {{ /recordData }}
+</ul>
+
+<p>Displaying ({{ numFound }}/{{ totalFound }}) results</p>
+{{ #more }}
+<a href="javascript:;" class="show-more">Show More</a>
+{{ /more }}
+
+
+{{ ^recordData }}
+<p>No result found!</p>
+{{ /recordData }}
 </script>
 
 </body>

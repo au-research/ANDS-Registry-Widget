@@ -11,20 +11,20 @@
     var widgetName = "registryWidget",
         defaults = {
             mode: "display-grant",
-            api_url: "",
-            service_url: "http://devl.ands.org.au/minh/api/",
-            render_engine: "default"
+            apiUrl: "",
+            serviceUrl: "http://devl.ands.org.au/minh/api/",
+            renderEngine: "default"
         },
-        default_params = {
-            api_key: "public"
+        defaultParams = {
+            apiKey: "public"
         };
 
     // The actual plugin constructor
-    function ANDSRegistryWidget( element, options ) {
+    function ANDSRegistryWidget ( element, options ) {
         this.element = element;
         this.settings = $.extend( {}, defaults, options );
         this._defaults = defaults;
-        this.params = default_params;
+        this.params = defaultParams;
         this._name = widgetName;
         this.init();
     }
@@ -47,7 +47,7 @@
 
             //set rendering engine to the preferred one
             if ( typeof Mustache == "object" ) {
-                this.settings.render_engine = "mustache";
+                this.settings.renderEngine = "mustache";
             }
 
             // mode
@@ -69,10 +69,6 @@
             }
         },
 
-        setQuery: function( type, value ) {
-
-        },
-
         bindLookup: function( element ) {
             var me = this;
 
@@ -80,7 +76,8 @@
             if ( $( element ).next( ".display-target" ).length > 0 ) {
                 target = $( element ).next( ".display-target" )[ 0 ];
             } else {
-                target = $( "<div class='display-target'/>" ).insertAfter( element );
+                target = $( "<div class='display-target'/>" )
+                    .insertAfter( element );
             }
 
             me.lookup( element, target );
@@ -111,21 +108,25 @@
             if ( $( element ).next( ".search-toggle" ).length > 0 ) {
                 searchToggle = $( element ).next( ".search-toggle" )[ 0 ];
             } else {
-                searchToggle = $( "<a href='javascript:;' class='search-toggle'>Open Search</a>" ).insertAfter( element );
+                var dom = "<a href='javascript:;' class='search-toggle'>" +
+                                "Open Search" +
+                            "</a>";
+                searchToggle = $( dom ).insertAfter( element );
             }
 
             var searchContainer;
             if ( $( searchToggle ).next( ".search-container" ).length > 0 ) {
                 searchContainer = $( searchToggle ).next( ".search-container" )[ 0 ];
             } else {
-                searchContainer = $( "<div class='search-container'></div>" ).insertAfter( searchToggle );
+                var dom = "<div class='search-container'></div>";
+                searchContainer = $( dom ).insertAfter( searchToggle );
             }
             searchContainer.hide();
 
             var displayOptions = {};
-            if ( this.settings[ "search_options" ] ) {
-                if ( this.settings[ "search_options" ][ "facets" ] ) {
-                    displayOptions[ "facets" ] = this.settings[ "search_options" ][ "facets" ];
+            if ( this.settings.searchOptions ) {
+                if ( this.settings.searchOptions.facets ) {
+                    displayOptions.facets = this.settings.searchOptions.facets;
                 }
             }
 
@@ -138,9 +139,9 @@
                 { value: "id", display: "Identifier" }
             ];
 
-            displayOptions[ "search_query_options" ] = searchQueryOptions;
-            displayOptions[ "activeQueryOptionDisplay" ] = "All";
-            displayOptions[ "activeQueryOptionValue" ] = "q";
+            displayOptions.searchQueryOption = searchQueryOptions;
+            displayOptions.activeQueryOptionDisplay = "All";
+            displayOptions.activeQueryOptionValue = "q";
 
             this.render( searchContainer, displayOptions, "search-tpl" );
 
@@ -154,7 +155,8 @@
             var searchResult = $( ".search-result", searchContainer );
 
             // auto search
-            if ( this.settings[ "search_options" ] && this.settings[ "search_options" ][ "auto_search" ] ) {
+            if ( this.settings.searchOptions &&
+                this.settings.searchOptions.autoSearch ) {
                 me.search( searchResult );
                 searchContainer.show();
             }
@@ -187,7 +189,9 @@
                 } );
 
                 me.params[ type ] = value;
-                $( ".active-query-option", searchContainer ).attr( "data-value", type ).html( display );
+                $( ".active-query-option", searchContainer )
+                    .attr( "data-value", type )
+                    .html( display );
             } );
 
             // click event on one of the search result item
@@ -195,9 +199,6 @@
                 $( element ).val( $( this ).data( "purl" ) );
                 $( searchContainer ).hide();
                 $( element ).blur();
-                if ( me.hasCallback( "post-select-result-item" ) ) {
-                    me.callback( "post-select-result-item", $( this ), $( element ) );
-                }
             } );
 
             //bind facetSelect
@@ -210,8 +211,8 @@
             //bind showMore
             $( searchResult ).on( "click", ".show-more", function() {
                 var pp;
-                pp = me.params[ "pp" ] ? me.params[ "pp" ] : 30;
-                me.params[ "rows" ] = me.params[ "rows" ] ? me.params[ "rows" ] + pp : 30 + pp;
+                pp = me.params.pp ? me.params.pp : 30;
+                me.params.rows = me.params.rows ? me.params.rows + pp : 30 + pp;
                 me.search( searchResult );
             } );
 
@@ -219,7 +220,9 @@
 
         lookup: function( element, target ) {
             var me = this;
-            if ( $( element ).val() != "" && me.params.purl != $( element ).val() ) {
+            if ( $( element ).val() != "" &&
+                me.params.purl != $( element ).val() )
+            {
                 me.params.purl = $( element ).val();
                 me.lookupAndDisplay( target, "display-grant-tpl" );
             }
@@ -232,7 +235,8 @@
             // correct the search query params
             var searchContainer = $( me.element ).nextAll( ".search-container" );
             var searchQuery = $( ".search-query", searchContainer );
-            var queryType = $( ".active-query-option", searchContainer ).attr( "data-value" );
+            var queryType = $( ".active-query-option", searchContainer )
+                .attr( "data-value" );
             if ( queryType == "" || queryType === undefined ) {
                 queryType = "q";
             }
@@ -242,8 +246,10 @@
         },
 
         getSearchOption: function( option ) {
-            if ( this.settings[ "search_options" ] && this.settings[ "search_options" ][ option ] ) {
-                return this.settings[ "search_options" ][ option ];
+            if ( this.settings.searchOptions &&
+                this.settings.searchOptions[ option ] )
+            {
+                return this.settings.searchOptions[ option ];
             } else {
                 return false;
             }
@@ -262,39 +268,30 @@
 
             me.service.lookup( me.params ).done( function( data ) {
                 me.event( "search-complete", data );
-                if ( me.hasCallback( "display" ) ) {
-                    me.callback( "display", element, data );
-                } else {
-                    me.render( element, data, template );
-                }
+                me.render( element, data, template );
             } );
-        },
-
-        hasCallback: function( event ) {
-            return !!( this.settings.hasOwnProperty( "evt" ) &&
-            this.settings.evt.hasOwnProperty( event ) &&
-            typeof this.settings.evt[ event ] == "function" );
-        },
-
-        callback: function( event, element, data ) {
-            this.settings[ "evt" ][ event ]( element, data );
         },
 
         setParams: function() {
 
             //decide on the API URL
             if ( this.settings.mode.indexOf( "grant" ) > -1 ) {
-                this.settings.api_url = this.settings.service_url + "v2.0/registry.jsonp/grants";
+                this.settings.apiUrl = this.settings.serviceUrl +
+                    "v2.0/registry.jsonp/grants";
             }
 
-            //append api_key as a param
-            if ( this.settings.api_key ) {
-                this.params[ "api_key" ] = this.settings.api_key;
+            //append apiKey as a param
+            if ( this.settings.apiKey ) {
+                this.params.apiKey = this.settings.apiKey;
             }
 
             this.params = $.extend( {}, this.params, $( this.element ).data() );
             if ( this.getSearchOption( "params" ) ) {
-                this.params = $.extend( {}, this.params, this.getSearchOption( "params" ) );
+                this.params = $.extend(
+                    {},
+                    this.params,
+                    this.getSearchOption( "params" )
+                );
             }
 
         },
@@ -309,19 +306,19 @@
          */
         render: function( element, content, template ) {
             var me = this;
-            if ( this.settings.render_engine == "default" ) {
+            if ( this.settings.renderEngine == "default" ) {
                 $( element ).text( JSON.stringify( content ) );
-            } else if ( this.settings.render_engine == "mustache" ) {
+            } else if ( this.settings.renderEngine == "mustache" ) {
 
                 template = me.getTemplate( template );
 
                 // TODO : refactor to pre-render process -> return content
-                if ( content[ "numFound" ] && content[ "totalFound" ] ) {
-                    content[ "more" ] = content[ "numFound" ] < content[ "totalFound" ];
+                if ( content.numFound && content.totalFound ) {
+                    content.more = content.numFound < content.totalFound;
                 }
 
-                if ( content[ "facets" ] ) {
-                    $.each( content[ "facets" ], function( idx, data ) {
+                if ( content.facets ) {
+                    $.each( content.facets, function( idx, data ) {
                         content[ idx + "_facet" ] = data;
                         content[ "hasfacet_" + idx ] = true;
                     } );
@@ -382,7 +379,11 @@
     $.fn[ widgetName ] = function( options ) {
         return this.each( function() {
             if ( !$.data( this, "plugin_" + widgetName ) ) {
-                $.data( this, "plugin_" + widgetName, new ANDSRegistryWidget( this, options ) );
+                $.data(
+                    this,
+                    "plugin_" + widgetName,
+                    new ANDSRegistryWidget( this, options )
+                );
             }
         } );
     };
@@ -392,13 +393,14 @@
      * @returns {{lookup: lookup, get: get}}
      * @constructor
      */
-    function APIService( settings ) {
+    function APIService ( settings ) {
 
         return {
             lookup: function( params ) {
-                return this.get( settings.api_url, params ).then( function( data ) {
-                    return data;
-                } );
+                return this.get( settings.apiUrl, params )
+                    .then( function( data ) {
+                        return data;
+                    } );
             },
             get: function( url, params ) {
                 return $.ajax( {
@@ -412,10 +414,151 @@
         };
     }
 
+    var displayGrantTemplate = "<div class=\"well\">";
+    displayGrantTemplate += "        {{ #recordData }}";
+    displayGrantTemplate += "        <h4>{{title}}<\/h4>";
+    displayGrantTemplate += "        <dl>";
+    displayGrantTemplate += "            {{ #purl }}";
+    displayGrantTemplate += "            <dt>PURL<\/dt>";
+    displayGrantTemplate += "            <dd>{{ purl }}<\/dd>";
+    displayGrantTemplate += "            {{ \/purl }}";
+    displayGrantTemplate += "            {{ #institutions }}";
+    displayGrantTemplate += "            <dt>Institutions<\/dt>";
+    displayGrantTemplate += "            <dd>{{ institutions }}<\/dd>";
+    displayGrantTemplate += "            {{ \/institutions }}";
+    displayGrantTemplate += "            {{ #funder }}";
+    displayGrantTemplate += "            <dt>Funder<\/dt>";
+    displayGrantTemplate += "            <dd>{{ funder }}<\/dd>";
+    displayGrantTemplate += "            {{ \/funder }}";
+    displayGrantTemplate += "            {{ #fundingScheme }}";
+    displayGrantTemplate += "            <dt>Funding Scheme<\/dt>";
+    displayGrantTemplate += "            <dd>{{ fundingScheme }}<\/dd>";
+    displayGrantTemplate += "            {{ \/fundingScheme }}";
+    displayGrantTemplate += "            {{ #researchers }}";
+    displayGrantTemplate += "            <dt>Researcher<\/dt>";
+    displayGrantTemplate += "            <dd>{{ researchers }}<\/dd>";
+    displayGrantTemplate += "            {{ \/researchers }}";
+    displayGrantTemplate += "        <\/dl>";
+    displayGrantTemplate += "        {{ description }}";
+    displayGrantTemplate += "        {{ \/recordData }}";
+    displayGrantTemplate += "        {{ ^recordData }}";
+    displayGrantTemplate += "        <p>No result found!<\/p>";
+    displayGrantTemplate += "        {{ \/recordData}}";
+    displayGrantTemplate += "    <\/div>";
+
+    var searchGrant = "<div class=\"well\">";
+    searchGrant += "    <div class=\"form-group\">";
+    searchGrant += "        <label for=\"lookup-grant\">Search Query<\/label>";
+    searchGrant += "";
+    searchGrant += "        <div class=\"input-group\">";
+    searchGrant += "            <span class=\"input-group-btn\">";
+    searchGrant += "                <div class=\"btn-group\">";
+    searchGrant += "                    <button type=\"button\"";
+    searchGrant += "class=\"btn btn-default dropdown-toggle btn-select-query-option\"";
+    searchGrant += "data-toggle=\"dropdown\" aria-haspopup=\"true\"";
+    searchGrant += "                            aria-expanded=\"false\">";
+    searchGrant += "                        <span class=\"value active-query-option\"";
+    searchGrant += "                              data-value=\"{{ activeQueryOptionValue }}\">";
+    searchGrant += "                            {{ activeQueryOptionDisplay }}";
+    searchGrant += "                        <\/span>";
+    searchGrant += "                        <span class=\"caret\"><\/span>";
+    searchGrant += "                    <\/button>";
+    searchGrant += "                    <ul class=\"dropdown-menu\">";
+    searchGrant += "                        {{ #search_query_options }}";
+    searchGrant += "                            <li><a href=\"javascript:;\"";
+    searchGrant += "                   class=\"select-query-option\"";
+    searchGrant += "                   data-value=\"{{ value }}\">{{ display }}<\/a><\/li>";
+    searchGrant += "                        {{ \/search_query_options }}";
+    searchGrant += "                    <\/ul>";
+    searchGrant += "                <\/div>";
+    searchGrant += "            <\/span>";
+    searchGrant += "            <input type=\"text\" class=\"form-control search-query\"";
+    searchGrant += "                   placeholder=\"Search Query\"";
+    searchGrant += "                   value=\"{{ searchQuery }}\"\/>";
+    searchGrant += "            <span class=\"input-group-btn\">";
+    searchGrant += "                <a href=\"javascript:;\"";
+    searchGrant += "                   class=\"btn btn-default search-button\">Search<\/a>";
+    searchGrant += "            <\/span>";
+    searchGrant += "        <\/div>";
+    searchGrant += "    <\/div>";
+    searchGrant += "    <div class=\"search-result\"><\/div>";
+    searchGrant += "<\/div>";
+
+    var searchResult = "{{ #hasfacet_administering_institution }}";
+    searchResult += "<div class=\"form-group\">";
+    searchResult += "    <label for=\"\">Institutions<\/label>";
+    searchResult += "    <select class=\"form-control facet-select\" data-param=\"institution\">";
+    searchResult += "        <option value=\"\"><\/option>";
+    searchResult += "        {{ #administering_institution_facet }}";
+    searchResult += "        <option value=\"{{ key }}\">{{ key }}<\/option>";
+    searchResult += "        {{ \/administering_institution_facet }}";
+    searchResult += "    <\/select>";
+    searchResult += "<\/div>";
+    searchResult += "{{ \/hasfacet_administering_institution }}";
+    searchResult += "";
+    searchResult += "{{ #hasfacet_funders }}";
+    searchResult += "<div class=\"form-group\">";
+    searchResult += "    <label for=\"\">Funders<\/label>";
+    searchResult += "    <select class=\"form-control facet-select\" data-param=\"funder\">";
+    searchResult += "        <option value=\"\"><\/option>";
+    searchResult += "        {{ #funders_facet }}";
+    searchResult += "        <option value=\"{{ key }}\">{{ key }}<\/option>";
+    searchResult += "        {{ \/funders_facet }}";
+    searchResult += "    <\/select>";
+    searchResult += "<\/div>";
+    searchResult += "{{ \/hasfacet_funders }}";
+    searchResult += "";
+    searchResult += "{{ #hasfacet_type }}";
+    searchResult += "<div class=\"form-group\">";
+    searchResult += "    <label for=\"\">Type<\/label>";
+    searchResult += "    <select class=\"form-control facet-select\" data-param=\"type\">";
+    searchResult += "        <option value=\"\"><\/option>";
+    searchResult += "        {{ #type_facet }}";
+    searchResult += "        <option value=\"{{ key }}\">{{ key }}<\/option>";
+    searchResult += "        {{ \/type_facet }}";
+    searchResult += "    <\/select>";
+    searchResult += "<\/div>";
+    searchResult += "{{ \/hasfacet_type }}";
+    searchResult += "";
+    searchResult += "{{ #hasfacet_funding_scheme }}";
+    searchResult += "<div class=\"form-group\">";
+    searchResult += "    <label for=\"\">Funding Scheme<\/label>";
+    searchResult += "    <select class=\"form-control facet-select\" data-param=\"fundingScheme\">";
+    searchResult += "        <option value=\"\"><\/option>";
+    searchResult += "        {{ #funding_scheme_facet }}";
+    searchResult += "        <option value=\"{{ key }}\">{{ key }}<\/option>";
+    searchResult += "        {{ \/funding_scheme_facet }}";
+    searchResult += "    <\/select>";
+    searchResult += "<\/div>";
+    searchResult += "{{ \/hasfacet_funding_scheme }}";
+    searchResult += "";
+    searchResult += "<ul>";
+    searchResult += "    {{ #recordData }}";
+    searchResult += "    <li>";
+    searchResult += "        <a href=\"javascript:;\"";
+    searchResult += "           class=\"search-result-item\"";
+    searchResult += "           data-purl=\"{{ purl }}\"";
+    searchResult += "        >";
+    searchResult += "            {{ title }}";
+    searchResult += "        <\/a>";
+    searchResult += "    <\/li>";
+    searchResult += "    {{ \/recordData }}";
+    searchResult += "<\/ul>";
+    searchResult += "";
+    searchResult += "<p>Displaying ({{ numFound }}\/{{ totalFound }}) results<\/p>";
+    searchResult += "{{ #more }}";
+    searchResult += "<a href=\"javascript:;\" class=\"show-more\">Show More<\/a>";
+    searchResult += "{{ \/more }}";
+    searchResult += "";
+    searchResult += "";
+    searchResult += "{{ ^recordData }}";
+    searchResult += "<p>No result found!<\/p>";
+    searchResult += "{{ \/recordData }}";
+
     var defaultTemplates = {
-        "display-grant-tpl": '<div class="well"> {{ #recordData }} <h4>{{title}}</h4> <dl> {{ #purl }} <dt>PURL</dt> <dd>{{ purl }}</dd> {{ /purl }} {{ #institutions }} <dt>Institutions</dt> <dd>{{ institutions }}</dd> {{ /institutions }} {{ #funder }} <dt>Funder</dt> <dd>{{ funder }}</dd> {{ /funder }} {{ #fundingScheme }} <dt>Funding Scheme</dt> <dd>{{ fundingScheme }}</dd> {{ /fundingScheme }} {{ #researchers }} <dt>Researcher</dt> <dd>{{ researchers }}</dd> {{ /researchers }} </dl> {{ description }} {{ /recordData }} {{ ^recordData }} <p>No result found!</p> {{ /recordData}} </div>',
-        "search-tpl": '<div class="well"> <div class="form-group"><label for="lookup-grant">Search Query</label> <div class="input-group"> <span class="input-group-btn"> <div class="btn-group"> <button type="button" class="btn btn-default dropdown-toggle btn-select-query-option" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="value active-query-option" data-value="{{ activeQueryOptionValue }}">{{ activeQueryOptionDisplay }}</span> <span class="caret"></span></button> <ul class="dropdown-menu"> {{ #search_query_options }} <li><a href="javascript:;" class="select-query-option" data-value="{{ value }}">{{ display }}</a></li> {{ /search_query_options }} </ul> </div> </span> <input type="text" class="form-control search-query" placeholder="Search Query" value="{{ searchQuery }}"/> <span class="input-group-btn"> <a href="javascript:;" class="btn btn-default search-button">Search</a> </span> </div> </div> <div class="search-result"></div></div>',
-        "search-result-tpl": '{{ #hasfacet_administering_institution }} <div class="form-group"><label for="">Institutions</label> <select class="form-control facet-select" data-param="institution"> <option value=""></option> {{ #administering_institution_facet }} <option value="{{ key }}">{{ key }}</option> {{ /administering_institution_facet }} </select> </div> {{ /hasfacet_administering_institution }} {{ #hasfacet_funders }} <div class="form-group"> <label for="">Funders</label> <select class="form-control facet-select" data-param="funder"> <option value=""></option> {{ #funders_facet }} <option value="{{ key }}">{{ key }}</option> {{ /funders_facet }} </select> </div> {{ /hasfacet_funders }} {{ #hasfacet_type }} <div class="form-group"> <label for="">Type</label> <select class="form-control facet-select" data-param="type"> <option value=""></option> {{ #type_facet }} <option value="{{ key }}">{{ key }}</option> {{ /type_facet }} </select> </div> {{ /hasfacet_type }} {{ #hasfacet_funding_scheme }} <div class="form-group"><label for="">Funding Scheme</label><select class="form-control facet-select" data-param="fundingScheme"><option value=""></option> {{ #funding_scheme_facet }} <option value="{{ key }}">{{ key }}</option> {{ /funding_scheme_facet }} </select> </div> {{ /hasfacet_funding_scheme }} <ul> {{ #recordData }} <li><a href="javascript:;" class="search-result-item" data-purl="{{ purl }}"> {{ title }} </a> </li> {{ /recordData }} </ul> <p>Displaying ({{ numFound }}/{{ totalFound }}) results</p> {{ #more }} <a href="javascript:;" class="show-more">Show More</a> {{ /more }}{{ ^recordData }}<p>No result found!</p>{{ /recordData }}'
+        "display-grant-tpl": displayGrantTemplate,
+        "search-tpl": searchGrant,
+        "search-result-tpl": searchResult
     };
 
 } )( jQuery, window, document );

@@ -34,18 +34,10 @@
 
     QUnit.test("enable custom config", function (assert) {
         $fixture.registryWidget({
-            api_key: "testAPI",
-            evt: {
-                display: function (element, data) {
-
-                },
-                search: 'something'
-            }
+            apiKey: "testAPI",
         });
         var pluginData = $fixture.data("plugin_registryWidget");
-        assert.equal(pluginData.settings.api_key, "testAPI", "option API Key");
-        assert.equal(true, pluginData.hasCallback('display'));
-        assert.equal(false, pluginData.hasCallback('search'));
+        assert.equal(pluginData.settings.apiKey, "testAPI", "option API Key");
     });
 
 
