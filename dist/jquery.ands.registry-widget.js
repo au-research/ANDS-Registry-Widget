@@ -229,18 +229,17 @@ APIService = ( function( $, window, document, undefined ) {
     $.extend( ANDSRegistryWidget.prototype, {
         init: function() {
 
+            // instead of self, use me
+            var me = this;
+
             //set Parameters
             this.setParams();
 
-            // bind the service element
-            //var APIService = Object.create(APIService);
-
+            // bind the service for use internally as a new instance
             this.service = new APIService.create( this.settings );
 
             //bind the jQuery element for manipulating
             var element = $( this.element );
-
-            var me = this;
 
             //set rendering engine to the preferred one
             if ( typeof Mustache === "object" ) {
@@ -260,16 +259,23 @@ APIService = ( function( $, window, document, undefined ) {
                     this.bindLookup( element );
                     break;
                 default:
-
-                    // console.log(this.settings.mode);
+                    this.event( "error",
+                        this.settings.mode + " is not supported yet" );
                     break;
             }
         },
 
+        /**
+         * bind the Lookup functionality to the input element
+         * on lookup will render the result to display-target
+         * @param element
+         */
         bindLookup: function( element ) {
-            var me = this;
 
+            var me = this;
             var target;
+
+            // bind or create display-target
             if ( $( element ).next( ".display-target" ).length > 0 ) {
                 target = $( element ).next( ".display-target" )[ 0 ];
             } else {
@@ -277,11 +283,15 @@ APIService = ( function( $, window, document, undefined ) {
                     .insertAfter( element );
             }
 
+            // initial lookup
             me.lookup( element, target );
+
+            // blur event on element
             $( element ).on( "blur", function() {
                 me.lookup( element, target );
             } );
 
+            // keyup event on element, with debounce for 1000ms
             $( element ).on( "keyup", function() {
                 delay( function() {
                     me.lookup( element, target );
@@ -298,10 +308,15 @@ APIService = ( function( $, window, document, undefined ) {
 
         },
 
+        /**
+         * binding the search functionality to the input element
+         * @param element
+         */
         bindSearch: function( element ) {
             var me = this;
             var dom ;
 
+            // create or bind the search toggler
             var searchToggle;
             if ( $( element ).next( ".search-toggle" ).length > 0 ) {
                 searchToggle = $( element ).next( ".search-toggle" )[ 0 ];
@@ -312,6 +327,7 @@ APIService = ( function( $, window, document, undefined ) {
                 searchToggle = $( dom ).insertAfter( element );
             }
 
+            // create or bind the search container
             var searchContainer;
             if ( $( searchToggle ).next( ".search-container" ).length > 0 ) {
                 searchContainer = $( searchToggle ).next( ".search-container" )[ 0 ];
@@ -341,6 +357,7 @@ APIService = ( function( $, window, document, undefined ) {
             displayOptions.activeQueryOptionDisplay = "All";
             displayOptions.activeQueryOptionValue = "q";
 
+            // render the search container
             this.render( searchContainer, displayOptions, "search-tpl" );
 
             // click event on the search toggle to open the search container
@@ -348,6 +365,7 @@ APIService = ( function( $, window, document, undefined ) {
                 searchContainer.toggle();
             } );
 
+            // declare DOM for binding
             var searchQuery = $( ".search-query", searchContainer );
             var searchButton = $( ".search-button", searchContainer );
             var searchResult = $( ".search-result", searchContainer );
@@ -417,6 +435,14 @@ APIService = ( function( $, window, document, undefined ) {
 
         },
 
+        /**
+         * lookup functionality
+         * search for PURL that is in a given element
+         * display result in a given target
+         * initiate a lookupAndDisplay
+         * @param element
+         * @param target
+         */
         lookup: function( element, target ) {
             var me = this;
             if ( $( element ).val() !== "" &&
@@ -427,6 +453,11 @@ APIService = ( function( $, window, document, undefined ) {
             }
         },
 
+        /**
+         * Initiate a search
+         * Return the rendered search result in a given container
+         * @param searchResultContainer
+         */
         search: function( searchResultContainer ) {
             var me = this;
             delete me.params.purl;
@@ -444,6 +475,12 @@ APIService = ( function( $, window, document, undefined ) {
             me.lookupAndDisplay( searchResultContainer, "search-result-tpl" );
         },
 
+        /**
+         * Returns the search option defined in the configuration
+         * false if not set
+         * @param option
+         * @returns {*}
+         */
         getSearchOption: function( option ) {
             if ( this.settings.searchOptions &&
                 this.settings.searchOptions[ option ] )
@@ -454,13 +491,21 @@ APIService = ( function( $, window, document, undefined ) {
             }
         },
 
+        /**
+         * Intitiate a lookup in the service with the current params
+         * Return the rendered search result in a given element with a template
+         * @param element
+         * @param template
+         */
         lookupAndDisplay: function( element, template ) {
             var me = this;
 
+            // todo custom loading
             if ( $( element ).text() === "" ) {
                 $( element ).text( "Loading..." );
             }
 
+            // todo pre-search event
             if ( me.getSearchOption( "facets" ) !== false ) {
                 me.params.facets = me.getSearchOption( "facets" ).join();
             }
@@ -471,6 +516,10 @@ APIService = ( function( $, window, document, undefined ) {
             } );
         },
 
+        /**
+         * Init the parameters of the widget
+         * Define the end points and every configuration before hand
+         */
         setParams: function() {
 
             //decide on the API URL
@@ -484,6 +533,7 @@ APIService = ( function( $, window, document, undefined ) {
                 this.params.apiKey = this.settings.apiKey;
             }
 
+            // merge all data attribute of the element to this.params
             this.params = $.extend( {}, this.params, $( this.element ).data() );
             if ( this.getSearchOption( "params" ) ) {
                 this.params = $.extend(
