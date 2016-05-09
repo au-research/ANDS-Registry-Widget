@@ -7,26 +7,18 @@
     <!--jQuery-->
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
 
-    <!-- Latest Bootstrap compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-    <!-- Optional Bootstrap theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
-          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-
-    <!-- Latest Bootstrap compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
-            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
-            crossorigin="anonymous"></script>
+    <!-- Bootstrap-->
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
     <!--Actual Widget-->
-    <!--<script src="../src/jquery.ands.registry-widget.api-service.js"></script>-->
-    <!--<script src="../src/jquery.ands.registry-widget.templates.js"></script>-->
-    <!--<script src="../src/jquery.ands.registry-widget.js"></script>-->
+    <script src="../src/jquery.ands.registry-widget.api-service.js"></script>
+    <script src="../src/jquery.ands.registry-widget.templates.js"></script>
+    <script src="../src/jquery.ands.registry-widget.js"></script>
 
     <!--Minified Widget-->
-    <script src="../dist/jquery.ands.registry-widget.min.js"></script>
+    <!--<script src="../dist/jquery.ands.registry-widget.min.js"></script>-->
 
     <!--Additional Libraries-->
     <script src="../bower_components/mustache.js/mustache.min.js"></script>
@@ -52,9 +44,12 @@
                         parameter of the API</p>
                     <pre>&lt;input type=&quot;text&quot; id=&quot;search-grant&quot; class=&quot;form-control&quot; value=&quot;&quot;/&gt;</pre>
 <pre>
-$(&#039;#search-grant&#039;).registryWidget({
+$(&#039;.search-grant&#039;).registryWidget({
     api_key: &quot;public&quot;,
-    mode: &quot;search-grant&quot;
+    mode: &quot;search-grant&quot;,
+    searchOptions: {
+        openIn: &#039;bootstrap-modal&#039;
+    }
 });</pre>
                 </div>
                 <div class="panel-body">
@@ -159,7 +154,10 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
 
         $('.search-grant').registryWidget({
             api_key: "public",
-            mode: "search-grant"
+            mode: "search-grant",
+            searchOptions: {
+                openIn: 'bootstrap-modal'
+            }
         });
 
         $('.advanced-search-grant').registryWidget({
@@ -177,6 +175,22 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
         });
     });
 </script>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="search-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="gridSystemModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 
 </body>
 </html>

@@ -51,6 +51,9 @@
                 this.settings.renderEngine = "mustache";
             }
 
+            //bind all internal events
+            me.bindInternalEvents();
+
             // mode
             switch ( this.settings.mode ) {
                 case "display-grant":
@@ -68,6 +71,28 @@
                         this.settings.mode + " is not supported yet" );
                     break;
             }
+        },
+
+        /**
+         * internal events are subscribed to here
+         *
+         */
+        bindInternalEvents: function( ) {
+            var element = $( this.element );
+            var me = this;
+
+            // selecting a search result
+            element.on( "ands.registry-widget.result-select", function() {
+                if ( me.getSearchOption( "openIn" ) === "bootstrap-modal" ) {
+                    $( "#search-modal" ).modal( "hide" );
+                } else {
+                    $( ".search-container" ).hide();
+                }
+            } );
+
+            element.on( "ands.registry-widget.error", function(event, data) {
+                console.error( data );
+            } );
         },
 
         /**
@@ -167,7 +192,22 @@
 
             // click event on the search toggle to open the search container
             searchToggle.on( "click", function() {
-                searchContainer.toggle();
+                var searchOpenIn = me.getSearchOption( "openIn" );
+                if ( searchOpenIn ) {
+                    if ( searchOpenIn === "bootstrap-modal" ) {
+                        var searchModal = $( "#search-modal" );
+                        searchContainer
+                            .appendTo( $( ".modal-body", searchModal ) )
+                            .show();
+                        searchModal.modal( "show" );
+                    } else {
+                        me.event( "error",
+                            searchOpenIn + "mode is not supported yet" );
+                    }
+                } else {
+                    searchContainer.toggle();
+                }
+
             } );
 
             // declare DOM for binding
@@ -218,9 +258,17 @@
 
             // click event on one of the search result item
             $( searchResult ).on( "click", ".search-result-item", function() {
-                $( element ).val( $( this ).data( "purl" ) );
-                $( searchContainer ).hide();
-                $( element ).blur();
+                me.event( "result-select", $( this ) );
+
+                //set parameter and do the lookup
+                var result = $( this ).data( "purl" );
+                if ( result ) {
+                    $( element ).val( $( this ).data( "purl" ) );
+                    $( element ).blur();
+                } else {
+                    me.event( "error", "No return value " );
+                }
+
             } );
 
             //bind facetSelect
