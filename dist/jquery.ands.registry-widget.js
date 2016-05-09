@@ -150,10 +150,33 @@ defaultTemplates = ( function( $, window, document, undefined ) {
     searchResult += "<p>No result found!<\/p>";
     searchResult += "{{ \/recordData }}";
 
+    var searchModal = "<div class=\"modal fade\" ";
+    searchModal += "     tabindex=\"-1\" ";
+    searchModal += "     role=\"dialog\" ";
+    searchModal += "     aria-labelledby=\"searchModal\" ";
+    searchModal += "     id=\"search-modal\">";
+    searchModal += "    <div class=\"modal-dialog\" role=\"document\">";
+    searchModal += "        <div class=\"modal-content\">";
+    searchModal += "            <div class=\"modal-header\">";
+    searchModal += "                <button type=\"button\" ";
+    searchModal += "                        class=\"close\" ";
+    searchModal += "                        data-dismiss=\"modal\" ";
+    searchModal += "                        aria-label=\"Close\">";
+    searchModal += "                    <span aria-hidden=\"true\">&times;<\/span>";
+    searchModal += "                <\/button>";
+    searchModal += "                <h4 class=\"modal-title\" ";
+    searchModal += "                    id=\"gridSystemModalLabel\">Search<\/h4>";
+    searchModal += "            <\/div>";
+    searchModal += "            <div class=\"modal-body\"><\/div>";
+    searchModal += "        <\/div>";
+    searchModal += "    <\/div>";
+    searchModal += "<\/div>";
+
     return {
         "display-grant-tpl": displayGrantTemplate,
         "search-tpl": searchGrant,
-        "search-result-tpl": searchResult
+        "search-result-tpl": searchResult,
+        "search-modal": searchModal
     };
 
 } )( jQuery, window, document, undefined );
@@ -285,7 +308,7 @@ APIService = ( function( $, window, document, undefined ) {
                 }
             } );
 
-            element.on( "ands.registry-widget.error", function(event, data) {
+            element.on( "ands.registry-widget.error", function( event, data ) {
                 console.error( data );
             } );
         },
@@ -391,6 +414,10 @@ APIService = ( function( $, window, document, undefined ) {
                 if ( searchOpenIn ) {
                     if ( searchOpenIn === "bootstrap-modal" ) {
                         var searchModal = $( "#search-modal" );
+                        if ( searchModal.length < 1 ) {
+                            $( "body" ).append( me.getTemplate( "search-modal" ) );
+                        }
+                        searchModal = $( "#search-modal" );
                         searchContainer
                             .appendTo( $( ".modal-body", searchModal ) )
                             .show();
@@ -657,13 +684,18 @@ APIService = ( function( $, window, document, undefined ) {
          * @returns {string}
          */
         getTemplate: function( tpl ) {
-            var template = "No template found!";
+            var template = "";
             var userDefinedTemplate = $( "#" + tpl );
 
             if ( userDefinedTemplate.length > 0 ) {
                 template = userDefinedTemplate.html();
             } else if ( defaultTemplates[ tpl ] ) {
                 template = defaultTemplates[ tpl ];
+            }
+
+            if ( template === "" ) {
+                this.event( "error", "No template found: " + tpl );
+                template = "No template found";
             }
 
             return template;

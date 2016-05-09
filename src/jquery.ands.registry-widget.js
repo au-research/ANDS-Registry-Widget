@@ -12,7 +12,7 @@
         defaults = {
             mode: "display-grant",
             apiUrl: "",
-            serviceUrl: "http://devl.ands.org.au/minh/api/",
+            serviceUrl: "//devl.ands.org.au/minh/api/",
             renderEngine: "default"
         },
         defaultParams = {
@@ -90,7 +90,7 @@
                 }
             } );
 
-            element.on( "ands.registry-widget.error", function(event, data) {
+            element.on( "ands.registry-widget.error", function( event, data ) {
                 console.error( data );
             } );
         },
@@ -196,6 +196,10 @@
                 if ( searchOpenIn ) {
                     if ( searchOpenIn === "bootstrap-modal" ) {
                         var searchModal = $( "#search-modal" );
+                        if ( searchModal.length < 1 ) {
+                            $( "body" ).append( me.getTemplate( "search-modal" ) );
+                        }
+                        searchModal = $( "#search-modal" );
                         searchContainer
                             .appendTo( $( ".modal-body", searchModal ) )
                             .show();
@@ -462,13 +466,18 @@
          * @returns {string}
          */
         getTemplate: function( tpl ) {
-            var template = "No template found!";
+            var template = "";
             var userDefinedTemplate = $( "#" + tpl );
 
             if ( userDefinedTemplate.length > 0 ) {
                 template = userDefinedTemplate.html();
             } else if ( defaultTemplates[ tpl ] ) {
                 template = defaultTemplates[ tpl ];
+            }
+
+            if ( template === "" ) {
+                this.event( "error", "No template found: " + tpl );
+                template = "No template found";
             }
 
             return template;
