@@ -23,7 +23,11 @@ module.exports = function( grunt ) {
                 banner: "<%= meta.banner %>"
             },
             dist: {
-                src: [ "src/jquery.ands.registry-widget.js" ],
+                src: [
+                    "src/jquery.ands.registry-widget.templates.js",
+                    "src/jquery.ands.registry-widget.api-service.js",
+                    "src/jquery.ands.registry-widget.js"
+                ],
                 dest: "dist/jquery.ands.registry-widget.js"
             }
         },
