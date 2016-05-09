@@ -148,7 +148,7 @@
                 { value: "id", display: "Identifier" }
             ];
 
-            displayOptions.searchQueryOption = searchQueryOptions;
+            displayOptions.searchQueryOptions = searchQueryOptions;
             displayOptions.activeQueryOptionDisplay = "All";
             displayOptions.activeQueryOptionValue = "q";
 
@@ -183,9 +183,9 @@
             } );
 
             // setting query option
-            $( ".select-query-option" ).on( "click", function() {
-                var elem = $( this );
-                var type = elem.data( "value" );
+            $( ".select-query-option", searchContainer ).on( "click", function() {
+                var elem = searchQuery;
+                var type = $( this ).data( "value" );
                 var value = elem.val();
 
                 //clear all params and get current display of type
@@ -198,6 +198,7 @@
                 } );
 
                 me.params[ type ] = value;
+
                 $( ".active-query-option", searchContainer )
                     .attr( "data-value", type )
                     .html( display );
@@ -473,11 +474,11 @@
     searchGrant += "                        <span class=\"caret\"><\/span>";
     searchGrant += "                    <\/button>";
     searchGrant += "                    <ul class=\"dropdown-menu\">";
-    searchGrant += "                        {{ #search_query_options }}";
+    searchGrant += "                        {{ #searchQueryOptions }}";
     searchGrant += "                            <li><a href=\"javascript:;\"";
     searchGrant += "                   class=\"select-query-option\"";
     searchGrant += "                   data-value=\"{{ value }}\">{{ display }}<\/a><\/li>";
-    searchGrant += "                        {{ \/search_query_options }}";
+    searchGrant += "                        {{ \/searchQueryOptions }}";
     searchGrant += "                    <\/ul>";
     searchGrant += "                <\/div>";
     searchGrant += "            <\/span>";

@@ -100,6 +100,54 @@
         } );
     } );
 
+    QUnit.test( "correct value for search options", function( assert ) {
+
+        $fixture.registryWidget( {
+            apiKey: "testAPI",
+            mode: "search-grant"
+        } );
+
+        var pluginData = $fixture.data( "plugin_registryWidget" );
+        var searchContainer = $fixture.nextAll( ".search-container" );
+        var searchQuery = $( ".search-query", searchContainer );
+        var searchButton = $( ".search-button", searchContainer );
+
+        // set fish to the value and test if q = fish
+        searchQuery.val( "fish" );
+        searchButton.click();
+        assert.equal( "fish", pluginData.params.q, "q is fish" );
+
+        // change to title and test if title = fish
+        $( ".select-query-option[data-value=title]", searchContainer ).click();
+        assert.equal( "fish",
+            pluginData.params.title,
+            "title is fish" );
+
+        // change to description and change the value
+        searchQuery.val( "shark" );
+        $( ".select-query-option[data-value=description]", searchContainer )
+            .click();
+        assert.equal( "shark",
+            pluginData.params.description,
+            "description is shark" );
+
+        // change to person and change the value
+        searchQuery.val( "John" );
+        $( ".select-query-option[data-value=person]", searchContainer )
+            .click();
+        assert.equal( "John",
+            pluginData.params.person,
+            "person is John" );
+
+        // change to id
+        $( ".select-query-option[data-value=id]", searchContainer )
+            .click();
+        assert.equal( "John",
+            pluginData.params.id,
+            "id is John" );
+
+    } );
+
     /**
      * Can't actually find if an $fixture.is(":visible")
      * because the element is not attached to the DOM somehow

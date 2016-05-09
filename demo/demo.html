@@ -21,7 +21,7 @@
             crossorigin="anonymous"></script>
 
     <!--Actual Widget-->
-    <script src="../src/jquery.ands.registry-widget.js"></script>
+    <script src="../dist/jquery.ands.registry-widget.min.js"></script>
 
     <!--Additional Libraries-->
     <script src="../bower_components/mustache.js/mustache.min.js"></script>
@@ -171,113 +171,6 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
             }
         });
     });
-</script>
-
-<script id="display-grant-tpl" type="text/html">
-    <div class="well">
-        {{ #recordData }}
-        <h4>{{title}}</h4>
-        <dl>
-            {{ #purl }}
-            <dt>PURL</dt>
-            <dd>{{ purl }}</dd>
-            {{ /purl }}
-            {{ #institutions }}
-            <dt>Institutions</dt>
-            <dd>{{ institutions }}</dd>
-            {{ /institutions }}
-            {{ #funder }}
-            <dt>Funder</dt>
-            <dd>{{ funder }}</dd>
-            {{ /funder }}
-            {{ #fundingScheme }}
-            <dt>Funding Scheme</dt>
-            <dd>{{ fundingScheme }}</dd>
-            {{ /fundingScheme }}
-            {{ #researchers }}
-            <dt>Researcher</dt>
-            <dd>{{ researchers }}</dd>
-            {{ /researchers }}
-        </dl>
-        {{ description }}
-        {{ /recordData }}
-        {{ ^recordData }}
-        <p>No result found!</p>
-        {{ /recordData}}
-    </div>
-</script>
-
-<script id="search-result-tpl" type="text/html">
-{{ #hasfacet_administering_institution }}
-<div class="form-group">
-    <label for="">Institutions</label>
-    <select class="form-control facet-select" data-param="institution">
-        <option value=""></option>
-        {{ #administering_institution_facet }}
-        <option value="{{ key }}">{{ key }}</option>
-        {{ /administering_institution_facet }}
-    </select>
-</div>
-{{ /hasfacet_administering_institution }}
-
-{{ #hasfacet_funders }}
-<div class="form-group">
-    <label for="">Funders</label>
-    <select class="form-control facet-select" data-param="funder">
-        <option value=""></option>
-        {{ #funders_facet }}
-        <option value="{{ key }}">{{ key }}</option>
-        {{ /funders_facet }}
-    </select>
-</div>
-{{ /hasfacet_funders }}
-
-{{ #hasfacet_type }}
-<div class="form-group">
-    <label for="">Type</label>
-    <select class="form-control facet-select" data-param="type">
-        <option value=""></option>
-        {{ #type_facet }}
-        <option value="{{ key }}">{{ key }}</option>
-        {{ /type_facet }}
-    </select>
-</div>
-{{ /hasfacet_type }}
-
-{{ #hasfacet_funding_scheme }}
-<div class="form-group">
-    <label for="">Funding Scheme</label>
-    <select class="form-control facet-select" data-param="fundingScheme">
-        <option value=""></option>
-        {{ #funding_scheme_facet }}
-        <option value="{{ key }}">{{ key }}</option>
-        {{ /funding_scheme_facet }}
-    </select>
-</div>
-{{ /hasfacet_funding_scheme }}
-
-<ul>
-    {{ #recordData }}
-    <li>
-        <a href="javascript:;"
-           class="search-result-item"
-           data-purl="{{ purl }}"
-        >
-            {{ title }}
-        </a>
-    </li>
-    {{ /recordData }}
-</ul>
-
-<p>Displaying ({{ numFound }}/{{ totalFound }}) results</p>
-{{ #more }}
-<a href="javascript:;" class="show-more">Show More</a>
-{{ /more }}
-
-
-{{ ^recordData }}
-<p>No result found!</p>
-{{ /recordData }}
 </script>
 
 </body>
