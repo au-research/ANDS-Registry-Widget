@@ -63,19 +63,17 @@
         } );
 
         var done = assert.async();
-        setTimeout( function() {
-            var pluginData = $fixture.data( "plugin_registryWidget" );
-            pluginData.service.lookup( pluginData.params ).then( function( data ) {
-                assert.equal( 1, data.totalFound, "found 1 result for " + testPurl );
-                var displayTarget = $fixture;
-                assert.equal( true, displayTarget.length > 0, "display target generated" );
-                assert.equal( true, displayTarget.html() !== "", "display target has content" );
-                assert.equal( true,
-                    displayTarget.text().indexOf( testPurl ) > -1,
-                    "display target has " + testPurl );
-                done();
-            } );
-        }, 0 );
+
+        $fixture.on( "ands.registry-widget.render-complete", function(  ) {
+            var displayTarget = $fixture;
+            assert.equal( true, displayTarget.length > 0, "display target generated" );
+            assert.equal( true, displayTarget.html() !== "", "display target has content" );
+            assert.equal( true,
+                displayTarget.text().indexOf( testPurl ) > -1,
+                "display target has " + testPurl );
+            done();
+        });
+
     } );
 
     QUnit.test( "lookup and display call back", function( assert ) {

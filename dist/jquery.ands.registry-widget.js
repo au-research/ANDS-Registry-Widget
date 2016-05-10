@@ -193,6 +193,25 @@ APIService = ( function( $, window, document, undefined ) {
 
         return {
             lookup: function( params ) {
+
+                // TODO move to object instantiation
+                //decide on the API URL
+                if ( settings.mode.indexOf( "grant" ) > -1 ) {
+                    settings.apiUrl = settings.serviceUrl +
+                        "v2.0/registry.jsonp/grants";
+                }
+
+                //append apiKey as a param
+                if ( settings.apiKey ) {
+                    params.apiKey = settings.apiKey;
+                }
+
+                // for API Service, we use api_key instead
+                if ( params.apiKey ) {
+                    params[ "api_key" ] = params.apiKey;
+                    delete params.apiKey;
+                }
+
                 return this.get( settings.apiUrl, params )
                     .then( function( data ) {
                         return data;
@@ -230,7 +249,7 @@ APIService = ( function( $, window, document, undefined ) {
         defaults = {
             mode: "display-grant",
             apiUrl: "",
-            serviceUrl: "//devl.ands.org.au/minh/api/",
+            serviceUrl: "//test.ands.org.au/api/",
             renderEngine: "default"
         },
         defaultParams = {
@@ -399,7 +418,8 @@ APIService = ( function( $, window, document, undefined ) {
                 { value: "description", display: "Description" },
                 { value: "person", display: "Person" },
                 { value: "principalInvestigator", display: "Principal Investigator" },
-                { value: "id", display: "Identifier" }
+                { value: "id", display: "Identifier" },
+                { value: "subject", display: "Subject" }
             ];
 
             displayOptions.searchQueryOptions = searchQueryOptions;
@@ -454,6 +474,13 @@ APIService = ( function( $, window, document, undefined ) {
 
             // click event on the search button
             searchButton.on( "click", function() {
+
+                //correct the query
+                var type = $( ".active-query-option", searchContainer )
+                    .attr( "data-value" );
+                var value = searchQuery.val();
+                me.params[ type ] = value;
+
                 me.search( searchResult );
             } );
 
@@ -497,7 +524,11 @@ APIService = ( function( $, window, document, undefined ) {
             //bind facetSelect
             $( searchResult ).on( "change", ".facet-select", function() {
                 var param = $( this ).data( "param" );
-                me.params[ param ] = $( this ).val();
+                if ( $( this ).val() !== "" ) {
+                    me.params[ param ] = "\"" + $( this ).val() + "\"";
+                } else {
+                    delete me.params[ param ];
+                }
                 me.search( searchResult );
             } );
 
@@ -598,17 +629,6 @@ APIService = ( function( $, window, document, undefined ) {
          */
         setParams: function() {
 
-            //decide on the API URL
-            if ( this.settings.mode.indexOf( "grant" ) > -1 ) {
-                this.settings.apiUrl = this.settings.serviceUrl +
-                    "v2.0/registry.jsonp/grants";
-            }
-
-            //append apiKey as a param
-            if ( this.settings.apiKey ) {
-                this.params.apiKey = this.settings.apiKey;
-            }
-
             // merge all data attribute of the element to this.params
             this.params = $.extend( {}, this.params, $( this.element ).data() );
             if ( this.getSearchOption( "params" ) ) {
@@ -656,7 +676,7 @@ APIService = ( function( $, window, document, undefined ) {
                 $.each( $( "select", element ), function() {
                     var param = $( this ).data( "param" );
                     if ( me.params[ param ] ) {
-                        $( this ).val( me.params[ param ] );
+                        $( this ).val( me.params[ param ].replace( /["]+/g, "" ) );
                     }
                 } );
 

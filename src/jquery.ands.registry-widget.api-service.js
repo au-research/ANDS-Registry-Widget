@@ -10,6 +10,25 @@ APIService = ( function( $, window, document, undefined ) {
 
         return {
             lookup: function( params ) {
+
+                // TODO move to object instantiation
+                //decide on the API URL
+                if ( settings.mode.indexOf( "grant" ) > -1 ) {
+                    settings.apiUrl = settings.serviceUrl +
+                        "v2.0/registry.jsonp/grants";
+                }
+
+                //append apiKey as a param
+                if ( settings.apiKey ) {
+                    params.apiKey = settings.apiKey;
+                }
+
+                // for API Service, we use api_key instead
+                if ( params.apiKey ) {
+                    params[ "api_key" ] = params.apiKey;
+                    delete params.apiKey;
+                }
+
                 return this.get( settings.apiUrl, params )
                     .then( function( data ) {
                         return data;
