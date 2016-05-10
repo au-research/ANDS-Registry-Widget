@@ -33,7 +33,7 @@
         $fixture.registryWidget( {
             apiKey: "testAPI",
             purl: testPurl,
-            mode: "display-grant"
+            mode: "display-activity"
         } );
 
         var done = assert.async();
@@ -59,7 +59,7 @@
         $fixture.registryWidget( {
             apiKey: "testAPI",
             purl: testPurl,
-            mode: "display-grant"
+            mode: "display-activity"
         } );
 
         var done = assert.async();
@@ -83,7 +83,7 @@
         $fixture.registryWidget( {
             apiKey: "testAPI",
             purl: testPurl,
-            mode: "display-grant"
+            mode: "display-activity"
         } );
 
         assert.equal(true, true, "test did run");

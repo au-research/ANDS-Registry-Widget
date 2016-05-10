@@ -196,9 +196,10 @@ APIService = ( function( $, window, document, undefined ) {
 
                 // TODO move to object instantiation
                 //decide on the API URL
-                if ( settings.mode.indexOf( "grant" ) > -1 ) {
+                if ( settings.mode.indexOf( "activity" ) > -1 ||
+                    settings.mode.indexOf( "grant" ) > -1 ) {
                     settings.apiUrl = settings.serviceUrl +
-                        "v2.0/registry.jsonp/grants";
+                        "v2.0/registry.jsonp/activities";
                 }
 
                 //append apiKey as a param
@@ -247,7 +248,7 @@ APIService = ( function( $, window, document, undefined ) {
     // Create the defaults once
     var widgetName = "registryWidget",
         defaults = {
-            mode: "display-grant",
+            mode: "display-activity",
             apiUrl: "",
             serviceUrl: "//test.ands.org.au/api/",
             renderEngine: "default"
@@ -293,13 +294,13 @@ APIService = ( function( $, window, document, undefined ) {
 
             // mode
             switch ( this.settings.mode ) {
-                case "display-grant":
+                case "display-activity":
                     me.lookupAndDisplay( element, "display-grant-tpl" );
                     break;
-                case "lookup-grant":
+                case "lookup-activity":
                     this.bindLookup( element );
                     break;
-                case "search-grant":
+                case "search-activity":
                     this.bindSearch( element );
                     this.bindLookup( element );
                     break;

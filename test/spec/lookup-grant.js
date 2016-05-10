@@ -34,7 +34,7 @@
 
         $fixture.registryWidget( {
             apiKey: "testAPI",
-            mode: "lookup-grant"
+            mode: "lookup-activity"
         } );
 
         var done = assert.async();

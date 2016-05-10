@@ -27,7 +27,7 @@
 
         $fixture.registryWidget( {
             apiKey: "testAPI",
-            mode: "search-grant"
+            mode: "search-activity"
         } );
 
         var searchContainer = $fixture.nextAll( ".search-container" );
@@ -69,7 +69,7 @@
 
         $fixture.registryWidget( {
             apiKey: "testAPI",
-            mode: "search-grant",
+            mode: "search-activity",
             searchOptions: {
                 autoSearch: true,
                 facets: [ "institutions", "funders", "type", "fundingScheme" ]
@@ -104,7 +104,7 @@
 
         $fixture.registryWidget( {
             apiKey: "testAPI",
-            mode: "search-grant"
+            mode: "search-activity"
         } );
 
         var pluginData = $fixture.data( "plugin_registryWidget" );
@@ -158,7 +158,7 @@
 
         $fixture.registryWidget( {
             apiKey: "testAPI",
-            mode: "search-grant"
+            mode: "search-activity"
         } );
 
         var searchToggle = $fixture.nextAll( ".search-toggle" );
@@ -192,7 +192,7 @@
 
         $fixture.registryWidget( {
             apiKey: "testAPI",
-            mode: "search-grant"
+            mode: "search-activity"
         } );
 
         var searchContainer = $fixture.nextAll( ".search-container" );

@@ -144,17 +144,17 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
     $(function () {
         $('#display-grant').registryWidget({
             api_key: "public",
-            mode: "display-grant"
+            mode: "display-activity"
         });
 
         $('#lookup-grant').registryWidget({
             api_key: "public",
-            mode: "lookup-grant"
+            mode: "lookup-activity"
         });
 
         $('.search-grant').registryWidget({
             api_key: "public",
-            mode: "search-grant",
+            mode: "search-activity",
             searchOptions: {
                 openIn: 'bootstrap-modal'
             }
@@ -162,7 +162,7 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
 
         $('.advanced-search-grant').registryWidget({
             apiKey: "public",
-            mode: "search-grant",
+            mode: "search-activity",
             searchOptions: {
                 autoSearch: true,
                 facets: ['institutions', 'funders', 'type', 'fundingScheme'],

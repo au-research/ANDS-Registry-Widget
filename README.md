@@ -28,12 +28,12 @@ ANDS Registry Widget comes with out of the box support for Twitter Bootstrap sty
 # Configuration
 Available parameters
 * `apiKey` : The API Key that this widget will use to access the ANDS Registry API
-* `mode` : `lookup-grant|search-grant|display-grant` Available modes are currently restricted to these
+* `mode` : `lookup-activity|search-activity|display-activity` Available modes are currently restricted to these
 * `searchOptions`: Search Options, for configuring how the Search functionality display and functions
 	* `autoSearch`: `true|false`
 	* `facets`: `institutions|funders|type|fundingScheme`
 	* `openIn`: `bootstrap-modal` : Enable custom search displayer. Default to nothing. (appear undearneath)
-	* `params`: Search parameters, overwrite the default ones. For a list of available parameters. Have a look at the Grants API
+	* `params`: Search parameters, overwrite the default ones. For a list of available parameters. Have a look at the Activites API
 		* `funder`: Default funder
 		* `rows` : Number of rows return
 		* `pp` : Per Page
@@ -45,10 +45,10 @@ Available parameters
 
 Search Parameters can also be embed into the target via HTML `data` attribute. For example
 ```javascript
-<div id="display-grant" data-purl="http://purl.org/au-research/grants/arc/DP140100435"></div>
-$('#display-grant').registryWidget({
+<div id="display-activity" data-purl="http://purl.org/au-research/activitys/arc/DP140100435"></div>
+$('#display-activity').registryWidget({
     api_key: "public",
-    mode: "display-grant"
+    mode: "display-activity"
 });
 ```
 

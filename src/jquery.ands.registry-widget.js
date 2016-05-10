@@ -10,7 +10,7 @@
     // Create the defaults once
     var widgetName = "registryWidget",
         defaults = {
-            mode: "display-grant",
+            mode: "display-activity",
             apiUrl: "",
             serviceUrl: "//test.ands.org.au/api/",
             renderEngine: "default"
@@ -56,13 +56,13 @@
 
             // mode
             switch ( this.settings.mode ) {
-                case "display-grant":
+                case "display-activity":
                     me.lookupAndDisplay( element, "display-grant-tpl" );
                     break;
-                case "lookup-grant":
+                case "lookup-activity":
                     this.bindLookup( element );
                     break;
-                case "search-grant":
+                case "search-activity":
                     this.bindSearch( element );
                     this.bindLookup( element );
                     break;

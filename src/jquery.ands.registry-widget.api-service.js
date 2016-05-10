@@ -13,9 +13,10 @@ APIService = ( function( $, window, document, undefined ) {
 
                 // TODO move to object instantiation
                 //decide on the API URL
-                if ( settings.mode.indexOf( "grant" ) > -1 ) {
+                if ( settings.mode.indexOf( "activity" ) > -1 ||
+                    settings.mode.indexOf( "grant" ) > -1 ) {
                     settings.apiUrl = settings.serviceUrl +
-                        "v2.0/registry.jsonp/grants";
+                        "v2.0/registry.jsonp/activities";
                 }
 
                 //append apiKey as a param
