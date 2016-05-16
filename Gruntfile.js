@@ -64,14 +64,16 @@ module.exports = function( grunt ) {
                 configFile: "karma.conf.js",
                 background: true,
                 singleRun: false,
-                browsers: [ "Firefox", "Chrome", "ChromeNoSecurity", "Safari" ],
+                browsers: [ "Firefox" ]
             },
 
             //continuous integration mode: run tests once in PhantomJS browser.
             travis: {
                 configFile: "karma.conf.js",
                 singleRun: true,
-                browsers: [ "Firefox", "Chrome", "ChromeNoSecurity", "Safari" ],
+                browsers: [ "Firefox" ],
+
+                //browsers: [ "Firefox", "Chrome", "ChromeNoSecurity", "Safari" ],
                 customLaunchers: {
                     ChromeNoSecurity: {
                         base: "Chrome",

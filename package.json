@@ -53,6 +53,6 @@
   },
   "scripts": {
     "jscs": "jscs src",
-    "test": "npm run jscs && grunt karma:unit --verbose && ./node_modules/.bin/karma start --browsers Firefox --single-run"
+    "test": "npm run jscs && grunt karma:travis --verbose"
   }
 }

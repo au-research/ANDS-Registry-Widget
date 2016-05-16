@@ -9,6 +9,11 @@ module.exports = function( config ) {
             "test/spec/*"
         ],
         frameworks: [ "qunit" ],
-        autoWatch: true
+        autoWatch: true,
+
+        // to avoid DISCONNECTED messages
+        browserDisconnectTimeout: 10000,
+        browserDisconnectTolerance: 1,
+        browserNoActivityTimeout: 60000
     } );
 };
