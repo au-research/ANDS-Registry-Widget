@@ -64,14 +64,14 @@ module.exports = function( grunt ) {
                 configFile: "karma.conf.js",
                 background: true,
                 singleRun: false,
-                browsers: [ "Firefox" ]
+                browsers: [ "PhantomJS" ]
             },
 
             //continuous integration mode: run tests once in PhantomJS browser.
             travis: {
                 configFile: "karma.conf.js",
                 singleRun: true,
-                browsers: [ "Firefox" ],
+                browsers: [ "Firefox", "PhantomJS" ],
 
                 //browsers: [ "Firefox", "Chrome", "ChromeNoSecurity", "Safari" ],
                 customLaunchers: {
@@ -81,6 +81,10 @@ module.exports = function( grunt ) {
                     }
                 }
             }
+        },
+
+        qunit: {
+            files: [ "test/qunit.html" ]
         },
 
         // watch for changes to source
@@ -99,10 +103,11 @@ module.exports = function( grunt ) {
     grunt.loadNpmTasks( "grunt-contrib-uglify" );
     grunt.loadNpmTasks( "grunt-contrib-coffee" );
     grunt.loadNpmTasks( "grunt-contrib-watch" );
+    grunt.loadNpmTasks( "grunt-contrib-qunit" );
     grunt.loadNpmTasks( "grunt-karma" );
 
     grunt.registerTask( "travis", [ "jshint", "karma:travis" ] );
     grunt.registerTask( "lint", [ "jshint", "jscs" ] );
     grunt.registerTask( "build", [ "concat", "uglify" ] );
-    grunt.registerTask( "default", [ "jshint", "build", "karma:unit" ] );
+    grunt.registerTask( "default", [ "jshint", "build", "karma:unit", "qunit" ] );
 };
