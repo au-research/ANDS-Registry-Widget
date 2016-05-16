@@ -1,3 +1,6 @@
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/au-research/ANDS-Registry-Widget/master/LICENSE)
+[![Build Status](https://travis-ci.org/au-research/ANDS-Registry-Widget.svg?branch=master)](https://travis-ci.org/au-research/ANDS-Registry-Widget)
+
 ANDS Registry Widget is a jQuery plugin that provides the ability to lookup, search and display records from the ANDS Registry API
 
 # Getting Started
