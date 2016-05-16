@@ -250,7 +250,7 @@ APIService = ( function( $, window, document, undefined ) {
         defaults = {
             mode: "display-activity",
             apiUrl: "",
-            serviceUrl: "https://devl.ands.org.au/minh/api/",
+            serviceUrl: "https://test.ands.org.au/rda/api/",
             renderEngine: "default"
         },
         defaultParams = {

@@ -86,7 +86,7 @@
             mode: "display-activity"
         } );
 
-        assert.equal(true, true, "test did run");
+        assert.equal( true, true, "test did run" );
 
     } );
 
