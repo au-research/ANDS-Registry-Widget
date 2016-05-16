@@ -8,3 +8,8 @@ node_js:
 # Install grunt-cli globally before installing all dependencies, including grunt
 before_install:
   - npm install grunt-cli -g
+
+# Allow travis to start Firefox for automated testing
+before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
