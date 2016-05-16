@@ -60,6 +60,8 @@ module.exports = function( grunt ) {
 
         // karma test runner
         karma: {
+
+            //continuous integration mode: run tests once in PhantomJS browser.
             unit: {
                 configFile: "karma.conf.js",
                 background: true,
@@ -67,13 +69,18 @@ module.exports = function( grunt ) {
                 browsers: [ "PhantomJS" ]
             },
 
-            //continuous integration mode: run tests once in PhantomJS browser.
+            //continuous integration with travis-ci, require Firefox to be booted
             travis: {
                 configFile: "karma.conf.js",
                 singleRun: true,
-                browsers: [ "Firefox", "PhantomJS" ],
+                browsers: [ "Firefox" ]
+            },
 
-                //browsers: [ "Firefox", "Chrome", "ChromeNoSecurity", "Safari" ],
+            // test on all browsers available on the machine
+            all: {
+                configFile: "karma.conf.js",
+                singleRun: true,
+                browsers: [ "Firefox", "Chrome", "ChromeNoSecurity", "Safari" ],
                 customLaunchers: {
                     ChromeNoSecurity: {
                         base: "Chrome",

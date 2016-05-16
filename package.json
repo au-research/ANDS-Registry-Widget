@@ -54,6 +54,6 @@
   },
   "scripts": {
     "jscs": "jscs src",
-    "test": "npm run jscs && grunt qunit --verbose"
+    "test": "npm run jscs && grunt qunit --verbose && grunt karma:travis --verbose"
   }
 }
