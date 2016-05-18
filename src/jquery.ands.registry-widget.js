@@ -13,7 +13,8 @@
             mode: "display-activity",
             apiUrl: "",
             serviceUrl: "https://test.ands.org.au/rda/api/",
-            renderEngine: "default"
+            renderEngine: "default",
+            eventPrefix: "ands.registry-widget."
         },
         defaultParams = {
             apiKey: "public"
@@ -82,7 +83,7 @@
             var me = this;
 
             // selecting a search result
-            element.on( "ands.registry-widget.result-select", function() {
+            element.on( me.settings.prefix + "result-select", function() {
                 if ( me.getSearchOption( "openIn" ) === "bootstrap-modal" ) {
                     $( "#search-modal" ).modal( "hide" );
                 } else {
@@ -90,7 +91,7 @@
                 }
             } );
 
-            element.on( "ands.registry-widget.error", function( event, data ) {
+            element.on( me.settings.prefix + "error", function( event, data ) {
                 console.error( data );
             } );
         },
@@ -152,8 +153,8 @@
                 searchToggle = $( element ).next( ".search-toggle" )[ 0 ];
             } else {
                 dom = "<a href='javascript:;' class='search-toggle'>" +
-                                "Open Search" +
-                            "</a>";
+                            "Open Search" +
+                        "</a>";
                 searchToggle = $( dom ).insertAfter( element );
             }
 
@@ -241,8 +242,7 @@
                 //correct the query
                 var type = $( ".active-query-option", searchContainer )
                     .attr( "data-value" );
-                var value = searchQuery.val();
-                me.params[ type ] = value;
+                me.params[ type ] = searchQuery.val();
 
                 me.search( searchResult );
             } );
@@ -341,7 +341,7 @@
                 queryType = "q";
             }
             me.params[ queryType ] = searchQuery.val();
-
+            me.event( "pre-search", [ me.settings, me.params ] );
             me.lookupAndDisplay( searchResultContainer, "search-result-tpl" );
         },
 
@@ -420,33 +420,52 @@
 
                 template = me.getTemplate( template );
 
-                // TODO : refactor to pre-render process -> return content
-                if ( content.numFound && content.totalFound ) {
-                    content.more = content.numFound < content.totalFound;
-                }
-
-                if ( content.facets ) {
-                    $.each( content.facets, function( idx, data ) {
-                        content[ idx + "_facet" ] = data;
-                        content[ "hasfacet_" + idx ] = true;
-                    } );
-                }
+                content = me.preProcessContent( content );
+                me.event( "pre-render", [ element, content, template ] );
 
                 $( element ).html( Mustache.render( template, content ) );
 
-                // TODO : refactor to post-render process -> fix display
-                // bind selects on element (for search only)
-                $.each( $( "select", element ), function() {
-                    var param = $( this ).data( "param" );
-                    if ( me.params[ param ] ) {
-                        $( this ).val( me.params[ param ].replace( /["]+/g, "" ) );
-                    }
-                } );
+                me.postProcessContent( element );
+                me.event( "post-render", [ element, content, template ] );
 
             } else {
                 me.event( "error", "No rendering engine found" );
             }
             me.event( "render-complete", [ element, content, template ] );
+        },
+
+        /**
+         * pre process the content for rendering
+         * @param content
+         * @returns {*}
+         */
+        preProcessContent: function( content ) {
+            if ( content.numFound && content.totalFound ) {
+                content.more = content.numFound < content.totalFound;
+            }
+
+            if ( content.facets ) {
+                $.each( content.facets, function( idx, data ) {
+                    content[ idx + "_facet" ] = data;
+                    content[ "hasfacet_" + idx ] = true;
+                } );
+            }
+
+            return content;
+        },
+
+        /**
+         * post process the DOM after rendering
+         */
+        postProcessContent: function( element ) {
+            var me = this;
+            // bind selects on element (for search only)
+            $.each( $( "select", element ), function() {
+                var param = $( this ).data( "param" );
+                if ( me.params[ param ] ) {
+                    $( this ).val( me.params[ param ].replace( /["]+/g, "" ) );
+                }
+            } );
         },
 
         /**
@@ -457,7 +476,7 @@
          * @param data
          */
         event: function( event, data ) {
-            var prefix = "ands.registry-widget.";
+            var prefix = this.settings.eventPrefix;
             $( this.element ).trigger( prefix + event, data );
         },
 

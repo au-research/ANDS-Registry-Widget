@@ -78,7 +78,7 @@
 
         var searchContainer = $fixture.nextAll( ".search-container" );
 
-        $fixture.on( "ands.registry-widget.render-complete", function( ) {
+        $fixture.on( "ands.registry-widget.render-complete", function() {
 
             assert.equal( true,
                 $( "select[data-param=institution]", searchContainer ).length > 0,
@@ -214,7 +214,7 @@
                 "has search result data" );
         } );
 
-        $fixture.on( "ands.registry-widget.render-complete", function( ) {
+        $fixture.on( "ands.registry-widget.render-complete", function() {
             var searchResultList = $( ".search-result ul li", searchContainer );
 
             assert.equal( true,
