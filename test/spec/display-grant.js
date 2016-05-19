@@ -42,10 +42,10 @@
             pluginData.service.lookup( pluginData.params )
                 .then( function( data ) {
                     assert.equal( true,
-                        data.recordData.length > 0,
+                        data.records.length > 0,
                         "has some record data returned in the lookup" );
-                    assert.equal( 1, data.totalFound, "found 1 result for " + testPurl );
-                    assert.equal( testPurl, data.recordData[ 0 ].purl, "has the same PURL" );
+                    assert.equal( 1, data.numFound, "found 1 result for " + testPurl );
+                    assert.equal( testPurl, data.records[ 0 ].purl, "has the same PURL" );
                     done();
                 } );
         }, 0 );

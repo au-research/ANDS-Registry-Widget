@@ -47,18 +47,19 @@
                 assert.equal( true,
                     displayTarget.length > 0,
                     "display target is generated" );
+
                 assert.equal( true,
                     displayTarget.html().length > 0,
                     "display target has some content" );
 
                 assert.equal( true,
-                    data.recordData.length > 0,
+                    data.records.length > 0,
                     "has some record data returned in the lookup" );
 
-                assert.equal( 1, data.totalFound, "found 1 result" );
+                assert.equal( true, data.numFound === 1, "found 1 result" );
 
                 assert.equal( testPurl,
-                    data.recordData[ 0 ].purl,
+                    data.records[ 0 ].purl,
                     "has the same PURL" );
 
                 done();

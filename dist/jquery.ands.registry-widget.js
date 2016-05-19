@@ -10,7 +10,7 @@ defaultTemplates = ( function( $, window, document, undefined ) {
     "use strict";
 
     var displayGrantTemplate = "<div class=\"well\">";
-    displayGrantTemplate += "        {{ #recordData }}";
+    displayGrantTemplate += "        {{ #records }}";
     displayGrantTemplate += "        <h4>{{title}}<\/h4>";
     displayGrantTemplate += "        <dl>";
     displayGrantTemplate += "            {{ #purl }}";
@@ -35,10 +35,10 @@ defaultTemplates = ( function( $, window, document, undefined ) {
     displayGrantTemplate += "            {{ \/researchers }}";
     displayGrantTemplate += "        <\/dl>";
     displayGrantTemplate += "        {{ description }}";
-    displayGrantTemplate += "        {{ \/recordData }}";
-    displayGrantTemplate += "        {{ ^recordData }}";
+    displayGrantTemplate += "        {{ \/records }}";
+    displayGrantTemplate += "        {{ ^records }}";
     displayGrantTemplate += "        <p>No result found!<\/p>";
-    displayGrantTemplate += "        {{ \/recordData}}";
+    displayGrantTemplate += "        {{ \/records}}";
     displayGrantTemplate += "    <\/div>";
 
     var searchGrant = "<div class=\"well\">";
@@ -128,7 +128,7 @@ defaultTemplates = ( function( $, window, document, undefined ) {
     searchResult += "{{ \/hasfacet_funding_scheme }}";
     searchResult += "";
     searchResult += "<ul>";
-    searchResult += "    {{ #recordData }}";
+    searchResult += "    {{ #records }}";
     searchResult += "    <li>";
     searchResult += "        <a href=\"javascript:;\"";
     searchResult += "           class=\"search-result-item\"";
@@ -137,18 +137,18 @@ defaultTemplates = ( function( $, window, document, undefined ) {
     searchResult += "            {{ title }}";
     searchResult += "        <\/a>";
     searchResult += "    <\/li>";
-    searchResult += "    {{ \/recordData }}";
+    searchResult += "    {{ \/records }}";
     searchResult += "<\/ul>";
     searchResult += "";
-    searchResult += "<p>Displaying ({{ numFound }}\/{{ totalFound }}) results<\/p>";
+    searchResult += "<p>Displaying ({{ limit }}\/{{ numFound }}) results<\/p>";
     searchResult += "{{ #more }}";
     searchResult += "<a href=\"javascript:;\" class=\"show-more\">Show More<\/a>";
     searchResult += "{{ \/more }}";
     searchResult += "";
     searchResult += "";
-    searchResult += "{{ ^recordData }}";
+    searchResult += "{{ ^records }}";
     searchResult += "<p>No result found!<\/p>";
-    searchResult += "{{ \/recordData }}";
+    searchResult += "{{ \/records }}";
 
     var searchModal = "<div class=\"modal fade\" ";
     searchModal += "     tabindex=\"-1\" ";
@@ -250,7 +250,7 @@ APIService = ( function( $, window, document, undefined ) {
         defaults = {
             mode: "display-activity",
             apiUrl: "",
-            serviceUrl: "https://test.ands.org.au/rda/api/",
+            serviceUrl: "https://test.ands.org.au/api/",
             renderEngine: "default",
             eventPrefix: "ands.registry-widget."
         },
@@ -537,7 +537,7 @@ APIService = ( function( $, window, document, undefined ) {
             $( searchResult ).on( "click", ".show-more", function() {
                 var pp;
                 pp = me.params.pp ? me.params.pp : 30;
-                me.params.rows = me.params.rows ? me.params.rows + pp : 30 + pp;
+                me.params.limit = me.params.limit ? me.params.limit + pp : 30 + pp;
                 me.search( searchResult );
             } );
 
@@ -678,8 +678,8 @@ APIService = ( function( $, window, document, undefined ) {
          * @returns {*}
          */
         preProcessContent: function( content ) {
-            if ( content.numFound && content.totalFound ) {
-                content.more = content.numFound < content.totalFound;
+            if ( content.numFound ) {
+                content.more = content.limit < content.numFound;
             }
 
             if ( content.facets ) {
@@ -697,6 +697,7 @@ APIService = ( function( $, window, document, undefined ) {
          */
         postProcessContent: function( element ) {
             var me = this;
+
             // bind selects on element (for search only)
             $.each( $( "select", element ), function() {
                 var param = $( this ).data( "param" );

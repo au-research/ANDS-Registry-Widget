@@ -38,6 +38,43 @@
 
         <div class="col-lg-12">
             <div class="panel panel-default">
+                <div class="panel-heading">Look for a grant knowing the funder</div>
+
+                <div class="panel-body">
+                    <p>
+                        Searching for a grant, filtering by the funders
+                    </p>
+<pre>
+$(&#039;.scenario-1&#039; ).registryWidget({
+    apiKey: &quot;public&quot;,
+    mode: &quot;search-activity&quot;,
+    searchOptions: {
+        autoSearch: true,
+        facets: [&#039;funders&#039;],
+        params: {
+            type: &#039;grant&#039;,
+            rows: 5,
+            pp: 5
+        }
+    }
+});
+</pre>
+                </div>
+                <div class="panel-body">
+                    <form action="">
+                        <div class="form-group">
+                            <label for="lookup-grant">Grant ID</label>
+                            <input type="text" class="form-control scenario-1"
+                                   placeholder="Grant ID will return here. Press Open Search to begin searching"
+                                   value=""/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="panel panel-default">
                 <div class="panel-heading">Search for a Grant</div>
                 <div class="panel-body">
                     <p class="alert alert-info">The default search configuration. Searches through the <code>q</code>
@@ -172,6 +209,24 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
                     pp: 5
                 }
             }
+        });
+
+        $('.scenario-1' ).registryWidget({
+            apiKey: "public",
+            mode: "search-activity",
+            searchOptions: {
+                autoSearch: true,
+                facets: ['funders'],
+                params: {
+                    type: 'grant',
+                    rows: 5,
+                    pp: 5
+                }
+            }
+        });
+
+        $('.scenario-1' ).on('ands.registry-widget.error', function(ev, data) {
+           alert(data);
         });
     });
 </script>

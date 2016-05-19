@@ -12,7 +12,7 @@
         defaults = {
             mode: "display-activity",
             apiUrl: "",
-            serviceUrl: "https://test.ands.org.au/rda/api/",
+            serviceUrl: "https://test.ands.org.au/api/",
             renderEngine: "default",
             eventPrefix: "ands.registry-widget."
         },
@@ -299,7 +299,7 @@
             $( searchResult ).on( "click", ".show-more", function() {
                 var pp;
                 pp = me.params.pp ? me.params.pp : 30;
-                me.params.rows = me.params.rows ? me.params.rows + pp : 30 + pp;
+                me.params.limit = me.params.limit ? me.params.limit + pp : 30 + pp;
                 me.search( searchResult );
             } );
 
@@ -440,8 +440,8 @@
          * @returns {*}
          */
         preProcessContent: function( content ) {
-            if ( content.numFound && content.totalFound ) {
-                content.more = content.numFound < content.totalFound;
+            if ( content.numFound ) {
+                content.more = content.limit < content.numFound;
             }
 
             if ( content.facets ) {
@@ -459,6 +459,7 @@
          */
         postProcessContent: function( element ) {
             var me = this;
+
             // bind selects on element (for search only)
             $.each( $( "select", element ), function() {
                 var param = $( this ).data( "param" );

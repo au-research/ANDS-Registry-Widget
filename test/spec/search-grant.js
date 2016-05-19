@@ -206,11 +206,7 @@
                 "has numFound" + data.numFound );
 
             assert.equal( true,
-                data.totalFound > 0,
-                "has totalFound " + data.totalFound );
-
-            assert.equal( true,
-                data.recordData.length > 0,
+                data.records.length > 0,
                 "has search result data" );
         } );
 
