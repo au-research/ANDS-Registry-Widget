@@ -71,17 +71,17 @@ defaultTemplates = ( function( $, window, document, undefined ) {
     searchGrant += "    <div class=\"search-result\"><\/div>";
     searchGrant += "<\/div>";
 
-    var searchResult = "{{ #hasfacet_administering_institution }}";
+    var searchResult = "{{ #hasfacet_institutions }}";
     searchResult += "<div class=\"form-group\">";
     searchResult += "    <label for=\"\">Institutions<\/label>";
     searchResult += "    <select class=\"form-control facet-select\" data-param=\"institution\">";
     searchResult += "        <option value=\"\"><\/option>";
-    searchResult += "        {{ #administering_institution_facet }}";
+    searchResult += "        {{ #institutions_facet }}";
     searchResult += "        <option value=\"{{ key }}\">{{ key }}<\/option>";
-    searchResult += "        {{ \/administering_institution_facet }}";
+    searchResult += "        {{ \/institutions_facet }}";
     searchResult += "    <\/select>";
     searchResult += "<\/div>";
-    searchResult += "{{ \/hasfacet_administering_institution }}";
+    searchResult += "{{ \/hasfacet_institutions }}";
     searchResult += "";
     searchResult += "{{ #hasfacet_funders }}";
     searchResult += "<div class=\"form-group\">";
