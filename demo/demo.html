@@ -179,7 +179,21 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
                     <code>&lt;div id=&quot;display-grant&quot; data-purl=&quot;http://purl.org/au-research/grants/arc/DP140100435&quot;&gt;&lt;/div&gt;</code>
                 </div>
                 <div class="panel-body">
-                    <div id="display-grant" data-purl="http://purl.org/au-research/grants/arc/DP140100435"></div>
+                    <div class="display-grant" data-purl="http://purl.org/au-research/grants/arc/DP140100435"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Display a Grant</div>
+                <div class="panel-body">
+                    <p class="alert alert-info">Display of a grant knowing the purl or any identifier value. Using the
+                        provided Mustache Template</p>
+                    <code>&lt;div id=&quot;display-grant&quot; data-purl=&quot;http://purl.org/au-research/grants/nhmrc/569539&quot;&gt;&lt;/div&gt;</code>
+                </div>
+                <div class="panel-body">
+                    <div class="display-grant" data-purl="http://purl.org/au-research/grants/nhmrc/569539"></div>
                 </div>
             </div>
         </div>
@@ -211,7 +225,7 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
 
 <script>
     $(function () {
-        $('#display-grant').registryWidget({
+        $('.display-grant').registryWidget({
             api_key: "public",
             mode: "display-activity"
         });
