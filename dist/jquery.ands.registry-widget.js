@@ -269,7 +269,16 @@ APIService = ( function( $, window, document, undefined ) {
             eventPrefix: "ands.registry-widget.",
             searchOptions: {
                 returnType: "purl",
-                autoLookup: true
+                autoLookup: true,
+                searchQueryOptions: [
+                    { value: "q", display: "All" },
+                    { value: "title", display: "Title" },
+                    { value: "description", display: "Description" },
+                    { value: "researcher", display: "Researcher" },
+                    { value: "principalInvestigator", display: "Principal Investigator" },
+                    { value: "id", display: "Identifier" },
+                    { value: "subject", display: "Subject" }
+                ]
             }
         },
         defaultParams = {
@@ -279,7 +288,7 @@ APIService = ( function( $, window, document, undefined ) {
     // The actual plugin constructor
     function ANDSRegistryWidget ( element, options ) {
         this.element = element;
-        this.settings = $.extend( {}, defaults, options );
+        this.settings = $.extend( true, {}, defaults, options );
         this._defaults = defaults;
         this.params = defaultParams;
         this._name = widgetName;
@@ -434,15 +443,7 @@ APIService = ( function( $, window, document, undefined ) {
             }
 
             // TODO make default
-            var searchQueryOptions = [
-                { value: "q", display: "All" },
-                { value: "title", display: "Title" },
-                { value: "description", display: "Description" },
-                { value: "person", display: "Person" },
-                { value: "principalInvestigator", display: "Principal Investigator" },
-                { value: "id", display: "Identifier" },
-                { value: "subject", display: "Subject" }
-            ];
+            var searchQueryOptions = me.settings.searchOptions.searchQueryOptions;
 
             displayOptions.searchQueryOptions = searchQueryOptions;
             displayOptions.activeQueryOptionDisplay = "All";

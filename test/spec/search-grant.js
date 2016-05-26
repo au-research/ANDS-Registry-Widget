@@ -137,11 +137,11 @@
 
         // change to person and change the value
         searchQuery.val( "John" );
-        $( ".select-query-option[data-value=person]", searchContainer )
+        $( ".select-query-option[data-value=researcher]", searchContainer )
             .click();
         assert.equal( "John",
-            pluginData.params.person,
-            "person is John" );
+            pluginData.params.researcher,
+            "researcher is John" );
 
         // change to id
         $( ".select-query-option[data-value=id]", searchContainer )

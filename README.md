@@ -47,6 +47,22 @@ Available parameters
 		* `fundingScheme`
 		* `identifier`
 		* ...
+    * `searchQueryOptions` : Search query options for free text search. For more information, refer to the searchQueryOptions section
+
+    
+## searchQueryOptions
+Primarily in a list of specified fields to search for. By default it's set to
+```javascript
+[
+    { value: "q", display: "All" },
+    { value: "title", display: "Title" },
+    { value: "description", display: "Description" },
+    { value: "researcher", display: "Researcher" },
+    { value: "principalInvestigator", display: "Principal Investigator" },
+    { value: "id", display: "Identifier" },
+    { value: "subject", display: "Subject" }
+]
+```
 
 Search Parameters can also be embed into the target via HTML `data` attribute. For example
 ```javascript
