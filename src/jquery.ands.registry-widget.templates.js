@@ -95,6 +95,18 @@ defaultTemplates = ( function( $, window, document, undefined ) {
     searchResult += "<\/div>";
     searchResult += "{{ \/hasfacet_funders }}";
     searchResult += "";
+    searchResult += "{{ #hasfacet_activity_status }}";
+    searchResult += "<div class=\"form-group\">";
+    searchResult += "    <label for=\"\">Status<\/label>";
+    searchResult += "    <select class=\"form-control facet-select\" data-param=\"status\">";
+    searchResult += "        <option value=\"\"><\/option>";
+    searchResult += "        {{ #activity_status_facet }}";
+    searchResult += "        <option value=\"{{ key }}\">{{ key }}<\/option>";
+    searchResult += "        {{ \/activity_status_facet }}";
+    searchResult += "    <\/select>";
+    searchResult += "<\/div>";
+    searchResult += "{{ \/hasfacet_activity_status }}";
+    searchResult += "";
     searchResult += "{{ #hasfacet_type }}";
     searchResult += "<div class=\"form-group\">";
     searchResult += "    <label for=\"\">Type<\/label>";
