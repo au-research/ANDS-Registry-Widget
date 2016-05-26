@@ -464,6 +464,11 @@
                 content.more = content.limit < content.numFound;
             }
 
+            // Fixed limit for display, used records.length instead
+            if ( content.limit >= content.numFound ) {
+                content.limit = content.numFound;
+            }
+
             if ( content.facets ) {
                 $.each( content.facets, function( idx, data ) {
                     content[ idx + "_facet" ] = data;

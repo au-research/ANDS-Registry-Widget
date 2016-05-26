@@ -158,7 +158,7 @@ defaultTemplates = ( function( $, window, document, undefined ) {
     searchResult += "    {{ \/records }}";
     searchResult += "<\/ul>";
     searchResult += "";
-    searchResult += "<p>Displaying ({{ limit }}\/{{ numFound }}) results<\/p>";
+    searchResult += "<p>Displaying ({{ records.length }}\/{{ numFound }}) results<\/p>";
     searchResult += "{{ #more }}";
     searchResult += "<a href=\"javascript:;\" class=\"show-more\">Show More<\/a>";
     searchResult += "{{ \/more }}";
@@ -718,6 +718,11 @@ APIService = ( function( $, window, document, undefined ) {
         preProcessContent: function( content ) {
             if ( content.numFound ) {
                 content.more = content.limit < content.numFound;
+            }
+
+            // Fixed limit for display, used records.length instead
+            if ( content.limit >= content.numFound ) {
+                content.limit = content.numFound;
             }
 
             if ( content.facets ) {

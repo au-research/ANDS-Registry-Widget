@@ -150,7 +150,7 @@ defaultTemplates = ( function( $, window, document, undefined ) {
     searchResult += "    {{ \/records }}";
     searchResult += "<\/ul>";
     searchResult += "";
-    searchResult += "<p>Displaying ({{ limit }}\/{{ numFound }}) results<\/p>";
+    searchResult += "<p>Displaying ({{ records.length }}\/{{ numFound }}) results<\/p>";
     searchResult += "{{ #more }}";
     searchResult += "<a href=\"javascript:;\" class=\"show-more\">Show More<\/a>";
     searchResult += "{{ \/more }}";
