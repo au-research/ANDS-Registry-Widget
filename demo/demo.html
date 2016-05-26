@@ -38,6 +38,38 @@
 
         <div class="col-lg-12">
             <div class="panel panel-default">
+                <div class="panel-heading">Custom return type</div>
+                <div class="panel-body">
+                    <p class="alert alert-info">
+                        Doesn't do auto lookup when returning type, specified returning types
+                    </p>
+<pre>
+$(&#039;.custom-return-type&#039; ).registryWidget({
+   apiKey: &quot;public&quot;,
+    mode: &quot;search-activity&quot;,
+    searchOptions: {
+        autoSearch: true,
+        autoLookup: false,
+        returnType: &#039;title&#039;
+    }
+});
+</pre>
+                </div>
+                <div class="panel-body">
+                    <form action="">
+                        <div class="form-group">
+                            <label for="lookup-grant">Grant ID</label>
+                            <input type="text" class="form-control custom-return-type"
+                                   placeholder="Grant ID will return here. Press Open Search to begin searching"
+                                   value=""/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="panel panel-default">
                 <div class="panel-heading">Look for a grant knowing the funder</div>
 
                 <div class="panel-body">
@@ -53,7 +85,7 @@ $(&#039;.scenario-1&#039; ).registryWidget({
         facets: [&#039;funders&#039;],
         params: {
             type: &#039;grant&#039;,
-            rows: 5,
+            limit: 5,
             pp: 5
         }
     }
@@ -119,7 +151,7 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
         facets: [&#039;institutions&#039;, &#039;funders&#039;, &#039;type&#039;, &#039;fundingScheme&#039;],
         params: {
             funder: &#039;Department of the Environment&#039;,
-            rows: 5,
+            limit: 5,
             pp: 5
         }
     }
@@ -205,7 +237,7 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
                 facets: ['institutions', 'funders', 'type', 'fundingScheme', 'status'],
                 params: {
                     funder: 'Department of the Environment',
-                    rows: 5,
+                    limit: 5,
                     pp: 5
                 }
             }
@@ -219,7 +251,7 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
                 facets: ['funders'],
                 params: {
                     type: 'grant',
-                    rows: 5,
+                    limit: 5,
                     pp: 5
                 }
             }
@@ -227,6 +259,16 @@ $(&#039;.advanced-search-grant&#039;).registryWidget({
 
         $('.scenario-1' ).on('ands.registry-widget.error', function(ev, data) {
            alert(data);
+        });
+
+        $('.custom-return-type' ).registryWidget({
+           apiKey: "public",
+            mode: "search-activity",
+            searchOptions: {
+                autoSearch: true,
+                autoLookup: false,
+                returnType: 'title'
+            }
         });
     });
 </script>

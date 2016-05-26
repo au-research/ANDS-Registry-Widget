@@ -34,11 +34,13 @@ Available parameters
 * `mode` : `lookup-activity|search-activity|display-activity` Available modes are currently restricted to these
 * `searchOptions`: Search Options, for configuring how the Search functionality display and functions
 	* `autoSearch`: `true|false`
-	* `facets`: `institutions|funders|type|fundingScheme`
+	* `autoLookup`: `true|false`
+	* `returnType`: `purl|title|id`
+	* `facets`: `institutions|funders|type|fundingScheme|status`
 	* `openIn`: `bootstrap-modal` : Enable custom search displayer. Default to nothing. (appear undearneath)
 	* `params`: Search parameters, overwrite the default ones. For a list of available parameters. Have a look at the Activites API
 		* `funder`: Default funder
-		* `rows` : Number of rows return
+		* `limit` : Number of rows return
 		* `pp` : Per Page
 		* `q`: General Search 
 		* `subject` 

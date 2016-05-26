@@ -72,7 +72,7 @@
             mode: "search-activity",
             searchOptions: {
                 autoSearch: true,
-                facets: [ "institutions", "funders", "type", "fundingScheme" ]
+                facets: [ "institutions", "funders", "type", "fundingScheme", "status" ]
             }
         } );
 
@@ -95,6 +95,10 @@
             assert.equal( true,
                 $( "select[data-param=fundingScheme]", searchContainer ).length > 0,
                 "fundingScheme facet select is available" );
+
+            assert.equal( true,
+                $( "select[data-param=status]", searchContainer ).length > 0,
+                "Activity Status facet select is available" );
 
             done();
         } );

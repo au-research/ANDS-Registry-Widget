@@ -137,6 +137,8 @@ defaultTemplates = ( function( $, window, document, undefined ) {
     searchResult += "        <a href=\"javascript:;\"";
     searchResult += "           class=\"search-result-item\"";
     searchResult += "           data-purl=\"{{ purl }}\"";
+    searchResult += "           data-title=\"{{ title }}\"";
+    searchResult += "           data-id=\"{{ id }}\"";
     searchResult += "        >";
     searchResult += "            {{ title }}";
     searchResult += "        <\/a>";

@@ -14,7 +14,11 @@
             apiUrl: "",
             serviceUrl: "https://test.ands.org.au/api/",
             renderEngine: "default",
-            eventPrefix: "ands.registry-widget."
+            eventPrefix: "ands.registry-widget.",
+            searchOptions: {
+                returnType: "purl",
+                autoLookup: true
+            }
         },
         defaultParams = {
             apiKey: "public"
@@ -119,7 +123,9 @@
 
             // blur event on element
             $( element ).on( "blur", function() {
-                me.lookup( element, target );
+                if ( me.settings.searchOptions.autoLookup ) {
+                    me.lookup( element, target );
+                }
             } );
 
             // keyup event on element, with debounce for 1000ms
@@ -274,9 +280,10 @@
                 me.event( "result-select", $( this ) );
 
                 //set parameter and do the lookup
-                var result = $( this ).data( "purl" );
+                var returnType = me.settings.searchOptions.returnType;
+                var result = $( this ).data( returnType );
                 if ( result ) {
-                    $( element ).val( $( this ).data( "purl" ) );
+                    $( element ).val( $( this ).data( returnType ) );
                     $( element ).blur();
                 } else {
                     me.event( "error", "No return value " );
@@ -315,10 +322,11 @@
          */
         lookup: function( element, target ) {
             var me = this;
+            var returnType = me.settings.searchOptions.returnType;
             if ( $( element ).val() !== "" &&
-                me.params.purl !== $( element ).val() )
+                me.params[ returnType ] !== $( element ).val() )
             {
-                me.params.purl = $( element ).val();
+                me.params[ returnType ] = $( element ).val();
                 me.lookupAndDisplay( target, "display-grant-tpl" );
             }
         },

@@ -145,6 +145,8 @@ defaultTemplates = ( function( $, window, document, undefined ) {
     searchResult += "        <a href=\"javascript:;\"";
     searchResult += "           class=\"search-result-item\"";
     searchResult += "           data-purl=\"{{ purl }}\"";
+    searchResult += "           data-title=\"{{ title }}\"";
+    searchResult += "           data-id=\"{{ id }}\"";
     searchResult += "        >";
     searchResult += "            {{ title }}";
     searchResult += "        <\/a>";
@@ -264,7 +266,11 @@ APIService = ( function( $, window, document, undefined ) {
             apiUrl: "",
             serviceUrl: "https://test.ands.org.au/api/",
             renderEngine: "default",
-            eventPrefix: "ands.registry-widget."
+            eventPrefix: "ands.registry-widget.",
+            searchOptions: {
+                returnType: "purl",
+                autoLookup: true
+            }
         },
         defaultParams = {
             apiKey: "public"
@@ -369,7 +375,9 @@ APIService = ( function( $, window, document, undefined ) {
 
             // blur event on element
             $( element ).on( "blur", function() {
-                me.lookup( element, target );
+                if ( me.settings.searchOptions.autoLookup ) {
+                    me.lookup( element, target );
+                }
             } );
 
             // keyup event on element, with debounce for 1000ms
@@ -524,9 +532,10 @@ APIService = ( function( $, window, document, undefined ) {
                 me.event( "result-select", $( this ) );
 
                 //set parameter and do the lookup
-                var result = $( this ).data( "purl" );
+                var returnType = me.settings.searchOptions.returnType;
+                var result = $( this ).data( returnType );
                 if ( result ) {
-                    $( element ).val( $( this ).data( "purl" ) );
+                    $( element ).val( $( this ).data( returnType ) );
                     $( element ).blur();
                 } else {
                     me.event( "error", "No return value " );
@@ -565,10 +574,11 @@ APIService = ( function( $, window, document, undefined ) {
          */
         lookup: function( element, target ) {
             var me = this;
+            var returnType = me.settings.searchOptions.returnType;
             if ( $( element ).val() !== "" &&
-                me.params.purl !== $( element ).val() )
+                me.params[ returnType ] !== $( element ).val() )
             {
-                me.params.purl = $( element ).val();
+                me.params[ returnType ] = $( element ).val();
                 me.lookupAndDisplay( target, "display-grant-tpl" );
             }
         },
