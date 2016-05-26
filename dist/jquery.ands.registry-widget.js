@@ -282,7 +282,8 @@ APIService = ( function( $, window, document, undefined ) {
             }
         },
         defaultParams = {
-            apiKey: "public"
+            apiKey: "public",
+            facetSort: "index"
         };
 
     // The actual plugin constructor
@@ -639,6 +640,10 @@ APIService = ( function( $, window, document, undefined ) {
             // todo pre-search event
             if ( me.getSearchOption( "facets" ) !== false ) {
                 me.params.facets = me.getSearchOption( "facets" ).join();
+            }
+
+            if ( me.getSearchOption( "facetSort" ) !== false ) {
+                me.params.facetSort = me.getSearchOption( "facetSort" );
             }
 
             me.service.lookup( me.params ).done( function( data ) {

@@ -37,6 +37,7 @@ Available parameters
 	* `autoLookup`: `true|false`
 	* `returnType`: `purl|title|id`
 	* `facets`: `institutions|funders|type|fundingScheme|status`
+	* `facetSort`: `index|count` : Determine the sorting order of the facets
 	* `openIn`: `bootstrap-modal` : Enable custom search displayer. Default to nothing. (appear undearneath)
 	* `params`: Search parameters, overwrite the default ones. For a list of available parameters. Have a look at the Activites API
 		* `funder`: Default funder
