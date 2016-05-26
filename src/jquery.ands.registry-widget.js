@@ -198,6 +198,12 @@
             displayOptions.activeQueryOptionDisplay = "All";
             displayOptions.activeQueryOptionValue = "q";
 
+            displayOptions.titleCase = function() {
+                return function( text, render ) {
+                    return render( text ) + "stuff";
+                };
+            };
+
             // render the search container
             this.render( searchContainer, displayOptions, "search-tpl" );
 
@@ -462,6 +468,16 @@
                 $.each( content.facets, function( idx, data ) {
                     content[ idx + "_facet" ] = data;
                     content[ "hasfacet_" + idx ] = true;
+                    content.titleCase = function() {
+                        return function( text, render ) {
+                            return render( text ).replace( /\w\S*/g,
+                                function( txt ) {
+                                    return txt.charAt( 0 ).toUpperCase() +
+                                    txt.substr( 1 ).toLowerCase();
+                                }
+                            );
+                        };
+                    };
                 } );
             }
 

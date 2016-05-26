@@ -101,7 +101,9 @@ defaultTemplates = ( function( $, window, document, undefined ) {
     searchResult += "    <select class=\"form-control facet-select\" data-param=\"status\">";
     searchResult += "        <option value=\"\"><\/option>";
     searchResult += "        {{ #activity_status_facet }}";
-    searchResult += "        <option value=\"{{ key }}\">{{ key }}<\/option>";
+    searchResult += "        <option value=\"{{ key }}\">";
+    searchResult += "        {{ #titleCase }}{{ key }}{{ /titleCase }}";
+    searchResult += "        <\/option>";
     searchResult += "        {{ \/activity_status_facet }}";
     searchResult += "    <\/select>";
     searchResult += "<\/div>";
@@ -113,7 +115,9 @@ defaultTemplates = ( function( $, window, document, undefined ) {
     searchResult += "    <select class=\"form-control facet-select\" data-param=\"type\">";
     searchResult += "        <option value=\"\"><\/option>";
     searchResult += "        {{ #type_facet }}";
-    searchResult += "        <option value=\"{{ key }}\">{{ key }}<\/option>";
+    searchResult += "        <option value=\"{{ key }}\">";
+    searchResult += "        {{ #titleCase }}{{ key }}{{ /titleCase }}";
+    searchResult += "        <\/option>";
     searchResult += "        {{ \/type_facet }}";
     searchResult += "    <\/select>";
     searchResult += "<\/div>";

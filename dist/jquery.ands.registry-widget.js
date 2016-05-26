@@ -109,7 +109,9 @@ defaultTemplates = ( function( $, window, document, undefined ) {
     searchResult += "    <select class=\"form-control facet-select\" data-param=\"status\">";
     searchResult += "        <option value=\"\"><\/option>";
     searchResult += "        {{ #activity_status_facet }}";
-    searchResult += "        <option value=\"{{ key }}\">{{ key }}<\/option>";
+    searchResult += "        <option value=\"{{ key }}\">";
+    searchResult += "        {{ #titleCase }}{{ key }}{{ /titleCase }}";
+    searchResult += "        <\/option>";
     searchResult += "        {{ \/activity_status_facet }}";
     searchResult += "    <\/select>";
     searchResult += "<\/div>";
@@ -121,7 +123,9 @@ defaultTemplates = ( function( $, window, document, undefined ) {
     searchResult += "    <select class=\"form-control facet-select\" data-param=\"type\">";
     searchResult += "        <option value=\"\"><\/option>";
     searchResult += "        {{ #type_facet }}";
-    searchResult += "        <option value=\"{{ key }}\">{{ key }}<\/option>";
+    searchResult += "        <option value=\"{{ key }}\">";
+    searchResult += "        {{ #titleCase }}{{ key }}{{ /titleCase }}";
+    searchResult += "        <\/option>";
     searchResult += "        {{ \/type_facet }}";
     searchResult += "    <\/select>";
     searchResult += "<\/div>";
@@ -450,6 +454,12 @@ APIService = ( function( $, window, document, undefined ) {
             displayOptions.activeQueryOptionDisplay = "All";
             displayOptions.activeQueryOptionValue = "q";
 
+            displayOptions.titleCase = function() {
+                return function( text, render ) {
+                    return render( text ) + "stuff";
+                };
+            };
+
             // render the search container
             this.render( searchContainer, displayOptions, "search-tpl" );
 
@@ -714,6 +724,16 @@ APIService = ( function( $, window, document, undefined ) {
                 $.each( content.facets, function( idx, data ) {
                     content[ idx + "_facet" ] = data;
                     content[ "hasfacet_" + idx ] = true;
+                    content.titleCase = function() {
+                        return function( text, render ) {
+                            return render( text ).replace( /\w\S*/g,
+                                function( txt ) {
+                                    return txt.charAt( 0 ).toUpperCase() +
+                                    txt.substr( 1 ).toLowerCase();
+                                }
+                            );
+                        };
+                    };
                 } );
             }
 
