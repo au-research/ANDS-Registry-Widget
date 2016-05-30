@@ -5,6 +5,11 @@ ANDS Registry Widget is a jQuery plugin that provides the ability to lookup, sea
 
 # Getting Started
 
+Install using bower
+```
+bower install ands-registry-widget
+```
+
 Include jQuery dependency
 ```html
 <script src="node_modules/jquery/dist/jquery.min.js"></script>
@@ -14,7 +19,7 @@ Include the provided distribution file
 ```html
 <script src="dist/jquery.ands.registry-widget.min.js"></script>
 ```
-Instantiate the plugin with 
+Instantiate the plugin with
 ```javascript
 $("#registry_widget").registryWidget({
     // options
@@ -43,14 +48,14 @@ Available parameters
 		* `funder`: Default funder
 		* `limit` : Number of rows return
 		* `pp` : Per Page
-		* `q`: General Search 
-		* `subject` 
+		* `q`: General Search
+		* `subject`
 		* `fundingScheme`
 		* `identifier`
 		* ...
     * `searchQueryOptions` : Search query options for free text search. For more information, refer to the searchQueryOptions section
 
-    
+
 ## searchQueryOptions
 Primarily in a list of specified fields to search for. By default it's set to
 ```javascript
