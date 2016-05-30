@@ -447,7 +447,6 @@ APIService = ( function( $, window, document, undefined ) {
                 }
             }
 
-            // TODO make default
             var searchQueryOptions = me.settings.searchOptions.searchQueryOptions;
 
             displayOptions.searchQueryOptions = searchQueryOptions;
@@ -614,7 +613,7 @@ APIService = ( function( $, window, document, undefined ) {
             }
             me.params[ queryType ] = searchQuery.val();
             me.event( "pre-search", [ me.settings, me.params ] );
-            me.lookupAndDisplay( searchResultContainer, "search-result-tpl" );
+            me.searchAndDisplay( searchResultContainer, "search-result-tpl" );
         },
 
         /**
@@ -634,12 +633,41 @@ APIService = ( function( $, window, document, undefined ) {
         },
 
         /**
-         * Intitiate a lookup in the service with the current params
-         * Return the rendered search result in a given element with a template
+         * Intitiate a lookup in the service with the given params
+         * Lookup params is located in the me.element
+         * returnType must also be set
+         *
+         * @param target
+         * @param template
+         */
+        lookupAndDisplay: function( target, template ) {
+            var me = this;
+            var params = {};
+            var returnType = me.settings.searchOptions.returnType;
+
+            // if it's an input, resolve at the value
+            if ( $( me.element ).val() !== "" ) {
+                params[ returnType ] = $( me.element ).val();
+            }
+
+            // if it's not an input, but something else
+            // get the data-{returnType} set
+            if ( $( me.element ).data( returnType ) ) {
+                params[ returnType ] = $( me.element ).data( returnType );
+            }
+
+            me.service.lookup( params ).done( function( data ) {
+                me.render( target, data, template );
+            } );
+        },
+
+        /**
+         * Initiate a search using the given params set in the settings
+         *
          * @param element
          * @param template
          */
-        lookupAndDisplay: function( element, template ) {
+        searchAndDisplay: function( element, template ) {
             var me = this;
 
             // todo custom loading
