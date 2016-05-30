@@ -329,11 +329,7 @@
          */
         lookup: function( element, target ) {
             var me = this;
-            var returnType = me.settings.searchOptions.returnType;
-            if ( $( element ).val() !== "" &&
-                me.params[ returnType ] !== $( element ).val() )
-            {
-                me.params[ returnType ] = $( element ).val();
+            if ( $( element ).val() !== "" ) {
                 me.lookupAndDisplay( target, "display-grant-tpl" );
             }
         },

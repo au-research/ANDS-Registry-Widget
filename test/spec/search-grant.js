@@ -350,4 +350,66 @@
         } );
     } );
 
+    QUnit.test( "Test type filters", function( assert ) {
+
+        var done = assert.async();
+
+        $fixture = $( "<input type='text' />" );
+
+        $fixture.registryWidget( {
+            apiKey: "testAPI",
+            mode: "search-activity",
+            searchOptions: {
+                autoSearch: true,
+                facets: [ "type" ]
+            }
+        } );
+
+        var searchContainer = $fixture.nextAll( ".search-container" );
+
+        $fixture.on( "ands.registry-widget.render-complete", function() {
+            var searchResultList = $( ".search-result ul li", searchContainer );
+
+            assert.equal( true,
+                searchResultList.length > 0,
+                "has search results rendered correctly in lists" );
+
+            var typeOptions = $( "select[data-param=type] option", searchContainer );
+            var typeOptionsValueList = $.map( typeOptions, function( option ) {
+                if ( option.value !== "" ) {
+                    return option.value;
+                }
+            } );
+            var typeOptionsDisplayList = $.map( typeOptions, function( option ) {
+                if ( option.value !== "" ) {
+                    return $.trim( $( option ).text() );
+                }
+            } );
+
+            assert.equal( true,
+                typeOptionsValueList.length > 0,
+                "has options value rendered correctly in lists" );
+
+            //check if typeOptionsValueList is alphabetical
+            var sortedList = typeOptionsValueList.sort( function( a, b ) {
+                return a.localeCompare( b );
+            } );
+            assert.deepEqual( typeOptionsValueList, sortedList,
+                "has type list sorted alphabetically"
+            );
+
+            //check if typeOptionsDisplayList is all titlecased
+            var titleCasedList = $.map( typeOptionsDisplayList, function( item ) {
+                return item.replace( /\w\S*/g, function( txt ) {
+                    return txt.charAt( 0 ).toUpperCase() + txt.substr( 1 ).toLowerCase();
+                } );
+            } );
+            assert.deepEqual( typeOptionsDisplayList, titleCasedList,
+                "has type list sorted title cased correctly"
+            );
+
+            done();
+        } );
+    } );
+
 }( jQuery, QUnit ) );

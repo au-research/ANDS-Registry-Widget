@@ -38,33 +38,30 @@
         } );
 
         var done = assert.async();
-        setTimeout( function() {
-            var pluginData = $fixture.data( "plugin_registryWidget" );
 
-            pluginData.service.lookup( pluginData.params ).then( function( data ) {
-                var displayTarget = $fixture.next( ".display-target" );
+        $fixture.on( "ands.registry-widget.render-complete", function( event, element, content ) {
+            var displayTarget = $fixture.next( ".display-target" );
 
-                assert.equal( true,
-                    displayTarget.length > 0,
-                    "display target is generated" );
+            assert.equal( true,
+                displayTarget.length > 0,
+                "display target is generated" );
 
-                assert.equal( true,
-                    displayTarget.html().length > 0,
-                    "display target has some content" );
+            assert.equal( true,
+                displayTarget.html().length > 0,
+                "display target has some content" );
 
-                assert.equal( true,
-                    data.records.length > 0,
-                    "has some record data returned in the lookup" );
+            assert.equal( true,
+                content.records.length > 0,
+                "has some record data returned in the lookup" );
 
-                assert.equal( true, data.numFound === 1, "found 1 result" );
+            assert.equal( true, content.numFound === 1, "found 1 result" );
 
-                assert.equal( testPurl,
-                    data.records[ 0 ].purl,
-                    "has the same PURL" );
+            assert.equal( testPurl,
+                content.records[ 0 ].purl,
+                "has the same PURL" );
 
-                done();
-            } );
-        }, 0 );
+            done();
+        } );
 
     } );
 
