@@ -12,7 +12,7 @@
         defaults = {
             mode: "display-activity",
             apiUrl: "",
-            serviceUrl: "https://test.ands.org.au/api/",
+            serviceUrl: "https://researchdata.ands.org.au/api/",
             renderEngine: "default",
             eventPrefix: "ands.registry-widget.",
             searchOptions: {
