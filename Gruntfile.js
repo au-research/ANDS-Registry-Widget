@@ -94,6 +94,12 @@ module.exports = function( grunt ) {
             files: [ "test/qunit.html" ]
         },
 
+        qunit_junit: {
+            options: {
+                dest: "test-reports"
+            }
+        },
+
         // watch for changes to source
         // Better than calling grunt a million times
         // (call 'grunt watch')
@@ -112,9 +118,11 @@ module.exports = function( grunt ) {
     grunt.loadNpmTasks( "grunt-contrib-watch" );
     grunt.loadNpmTasks( "grunt-contrib-qunit" );
     grunt.loadNpmTasks( "grunt-karma" );
+    grunt.loadNpmTasks( "grunt-qunit-junit" );
 
     grunt.registerTask( "travis", [ "jshint", "karma:travis" ] );
     grunt.registerTask( "lint", [ "jshint", "jscs" ] );
     grunt.registerTask( "build", [ "concat", "uglify" ] );
-    grunt.registerTask( "default", [ "jshint", "build", "karma:unit", "qunit" ] );
+    grunt.registerTask( "test", [ "qunit_junit", "qunit" ] );
+    grunt.registerTask( "default", [ "jshint", "build", "karma:unit", "qunit_junit", "qunit" ] );
 };
