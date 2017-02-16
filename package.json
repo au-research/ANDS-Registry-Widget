@@ -30,7 +30,9 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "jquery": ">=1.5.1"
+    "bootstrap": "^3.3.7",
+    "jquery": ">=1.5.1",
+    "mustache": "^2.3.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
